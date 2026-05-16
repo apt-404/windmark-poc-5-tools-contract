@@ -480,12 +480,12 @@
       "feature_title": "F1.10 Decisión ADR-003",
       "section": "Análisis del reporte y selección de variante",
       "description": "Leer `outputs/report.md` e identificar la variante con la combinación más favorable de latencia media, tasa de éxito y token footprint; si hay empate entre dos variantes, formular el argumento de desempate basado en criterios de simplicidad operativa y portabilidad del tech-spec; anotar la variante elegida con referencias exactas a las secciones de `report.md`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:16:07.579772+00:00",
+      "completed_at": "2026-05-16T16:17:21.336942+00:00"
     },
     {
       "id": "f1.10-02",
@@ -493,12 +493,12 @@
       "feature_title": "F1.10 Decisión ADR-003",
       "section": "Redacción de driver.md",
       "description": "Crear `outputs/driver.md` con las cuatro secciones: `## Contrato elegido` (variante y justificación en 2-4 frases con referencia a sección de `report.md`), `## Evidencia` (tabla de las tres métricas para la variante elegida con referencia al campo de `metrics.json`), `## Triggers de upgrade a MCP` (los tres criterios verificables con definición exacta de qué los activa: segundo cliente independiente, blast radius de la tool, demanda explícita de protocolo MCP), y `## Riesgos asumidos` (derivados de las limitaciones del tech-spec).",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:17:21.337752+00:00",
+      "completed_at": "2026-05-16T16:19:01.835642+00:00"
     },
     {
       "id": "f1.10-03",
@@ -506,12 +506,12 @@
       "feature_title": "F1.10 Decisión ADR-003",
       "section": "Tests",
       "description": "Crear `tests/test_adr_driver.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_driver_contains_required_sections()` lee `outputs/driver.md` y verifica que contiene las secciones `## Contrato elegido`, `## Evidencia`, `## Triggers de upgrade a MCP` y `## Riesgos asumidos`; `test_driver_references_evidence_source()` verifica que `outputs/driver.md` contiene al menos una referencia a `report.md` o `metrics.json` como fuente de evidencia trazable.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:19:01.836671+00:00",
+      "completed_at": "2026-05-16T16:19:53.056896+00:00"
     },
     {
       "id": "f1.10-04",
@@ -519,12 +519,12 @@
       "feature_title": "F1.10 Decisión ADR-003",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_adr_driver.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:19:53.057714+00:00",
+      "completed_at": "2026-05-16T16:20:18.897732+00:00"
     },
     {
       "id": "f1.8-01",

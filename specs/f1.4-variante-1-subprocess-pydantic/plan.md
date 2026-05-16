@@ -6,7 +6,7 @@ Se implementan dos funciones puras en `variant-1-subprocess/`, una por tool, que
 
 ## Módulo nmap_scan
 
-- [ ] Crear el directorio `variant-1-subprocess/` con `__init__.py` vacío y `nmap_scan.py` con la función `run(input: NmapScanInput) -> ToolResult` completa: construir el comando `["nmap"] + input.flags + ["-p", input.ports, input.target]`, ejecutar con `subprocess.run(..., capture_output=True, text=True, timeout=30)`, parsear `stdout` con regex `r"(\d+)/tcp\s+open\s+(\S+)"` para extraer `open_ports` y `service_fingerprints`, asignar `extra` y capturar `TimeoutExpired` con `error="timeout"`.
+- [x] Crear el directorio `variant-1-subprocess/` con `__init__.py` vacío y `nmap_scan.py` con la función `run(input: NmapScanInput) -> ToolResult` completa: construir el comando `["nmap"] + input.flags + ["-p", input.ports, input.target]`, ejecutar con `subprocess.run(..., capture_output=True, text=True, timeout=30)`, parsear `stdout` con regex `r"(\d+)/tcp\s+open\s+(\S+)"` para extraer `open_ports` y `service_fingerprints`, asignar `extra` y capturar `TimeoutExpired` con `error="timeout"`.
 
 ## Módulo gobuster_dir
 

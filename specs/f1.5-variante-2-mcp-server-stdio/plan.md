@@ -10,7 +10,7 @@ Se implementa un servidor FastMCP con transporte stdio que expone `nmap_scan` y 
 
 ## Servidor FastMCP
 
-- [ ] Crear `variant-2-mcp-stdio/server.py` que instancie `mcp = FastMCP("windmark-poc5-v2")`, registre las dos tools con `@mcp.tool()` llamando a las funciones de `tools/`, y arranque con `mcp.run(transport="stdio")` en el bloque `if __name__ == "__main__"`.
+- [x] Crear `variant-2-mcp-stdio/server.py` que instancie `mcp = FastMCP("windmark-poc5-v2")`, registre las dos tools con `@mcp.tool()` llamando a las funciones de `tools/`, y arranque con `mcp.run(transport="stdio")` en el bloque `if __name__ == "__main__"`.
 
 ## Integración en compare.py
 

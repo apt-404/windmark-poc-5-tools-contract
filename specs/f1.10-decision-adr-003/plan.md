@@ -6,7 +6,7 @@ Se genera `outputs/driver.md` a partir del `report.md` completado. La estructura
 
 ## Análisis del reporte y selección de variante
 
-- [ ] Leer `outputs/report.md` e identificar la variante con la combinación más favorable de latencia media, tasa de éxito y token footprint; si hay empate entre dos variantes, formular el argumento de desempate basado en criterios de simplicidad operativa y portabilidad del tech-spec; anotar la variante elegida con referencias exactas a las secciones de `report.md`.
+- [x] Leer `outputs/report.md` e identificar la variante con la combinación más favorable de latencia media, tasa de éxito y token footprint; si hay empate entre dos variantes, formular el argumento de desempate basado en criterios de simplicidad operativa y portabilidad del tech-spec; anotar la variante elegida con referencias exactas a las secciones de `report.md`.
 
 ## Redacción de driver.md
 

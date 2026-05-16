@@ -5,7 +5,7 @@ from typing import Optional
 class NmapScanInput(BaseModel):
     target: str
     ports: str = "1-1000"
-    flags: list[str] = Field(default_factory=lambda: ["-sV"])
+    flags: list[str] = Field(default_factory=lambda: ["-Pn", "-sV"])
 
 
 class GobusterDirInput(BaseModel):

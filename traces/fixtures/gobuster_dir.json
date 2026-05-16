@@ -3,6 +3,6 @@
   "type": "function",
   "function": {
     "name": "gobuster_dir",
-    "arguments": "{\"target\": \"http://192.168.1.1\", \"wordlist\": \"/usr/share/wordlists/dirb/common.txt\", \"extensions\": [\"php\", \"html\", \"txt\"]}"
+    "arguments": "{\"target\": \"http://10.129.160.94\", \"wordlist\": \"/home/charlstown/wordlists/common.txt\", \"extensions\": [\"php\", \"html\", \"txt\"]}"
   }
 }

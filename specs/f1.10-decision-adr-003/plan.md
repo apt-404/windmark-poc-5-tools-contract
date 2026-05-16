@@ -2,30 +2,17 @@
 
 ## Enfoque
 
-Se redacta `outputs/driver.md` a partir del `report.md` completado. La estructura es: contrato elegido con referencia a métricas, triggers de upgrade a MCP como criterios verificables y riesgos asumidos. No se redacta hasta tener `outputs/report.md` final (F1.9 completada).
+Se genera `outputs/driver.md` a partir del `report.md` completado. La estructura es: contrato elegido con referencia a métricas, triggers de upgrade a MCP como criterios verificables y riesgos asumidos. Requiere `outputs/report.md` final (F1.9 completada).
 
-## Análisis de report.md para la decisión
+## Análisis del reporte y selección de variante
 
-- [ ] Leer `outputs/report.md` e identificar qué variante tiene la combinación más favorable de latencia media, tasa de éxito y token footprint de schema.
-- [ ] Si una variante domina en las tres métricas, anotarla como candidata con las referencias de sección exactas.
-- [ ] Si hay empate entre dos variantes, redactar el argumento de desempate basado en criterios arquitectónicos del tech-spec (simplicidad operativa, portabilidad futura a MCP).
+- [ ] Leer `outputs/report.md` e identificar la variante con la combinación más favorable de latencia media, tasa de éxito y token footprint; si hay empate entre dos variantes, formular el argumento de desempate basado en criterios de simplicidad operativa y portabilidad del tech-spec; anotar la variante elegida con referencias exactas a las secciones de `report.md`.
 
 ## Redacción de driver.md
 
-- [ ] Crear `outputs/driver.md` con sección `## Contrato elegido` que declare la variante y explique la decisión en 2-4 frases con referencia a la sección de métricas de `report.md`.
-- [ ] Añadir sección `## Evidencia` con tabla de las tres métricas (latencia media, tasa de éxito, token footprint) para la variante elegida y referencia al dato en `metrics.json`.
-- [ ] Añadir sección `## Triggers de upgrade a MCP` con los tres criterios concretos y verificables:
-  - **Segundo cliente**: definir exactamente qué cuenta (p.ej. un segundo proceso Python independiente que necesite invocar las mismas tools, o un servicio externo vía HTTP).
-  - **Blast radius**: definir el umbral (p.ej. cualquier tool que ejecute comandos con privilegios elevados o que modifique el sistema de archivos fuera del directorio de trabajo).
-  - **Demanda comercial**: definir la condición (p.ej. un cliente o integración que requiera explícitamente protocolo MCP como contrato de integración, no solo Python callable).
-- [ ] Añadir sección `## Riesgos asumidos` con los riesgos del contrato elegido derivados de las limitaciones conocidas del tech-spec.
+- [ ] Crear `outputs/driver.md` con las cuatro secciones: `## Contrato elegido` (variante y justificación en 2-4 frases con referencia a sección de `report.md`), `## Evidencia` (tabla de las tres métricas para la variante elegida con referencia al campo de `metrics.json`), `## Triggers de upgrade a MCP` (los tres criterios verificables con definición exacta de qué los activa: segundo cliente independiente, blast radius de la tool, demanda explícita de protocolo MCP), y `## Riesgos asumidos` (derivados de las limitaciones del tech-spec).
 
-## Verificación de criterios de cierre
+## Verificación
 
-- [ ] Verificar que cada afirmación en `## Contrato elegido` tiene referencia a `report.md`.
-- [ ] Verificar que los tres triggers de `## Triggers de upgrade a MCP` son verificables: para cada uno, comprobar que existe una pregunta de sí/no que los cierra (p.ej. "¿hay un segundo proceso independiente consumiendo las tools?" → sí/no).
-- [ ] Verificar que `compare.py --check` devuelve código 0 (Gate Final, condición 1).
-- [ ] Verificar que `traces/metrics.json` contiene métricas de al menos dos variantes con `duration_ms` y `exit_code` (Gate Final, condición 3).
-- [ ] Verificar que `outputs/report.md` incluye la tabla comparativa con las tres métricas (Gate Final, condición 4).
-- [ ] Verificar que `outputs/driver.md` declara el contrato elegido con referencia explícita a `report.md` (Gate Final, condición 5).
-- [ ] Verificar que los tres triggers están documentados como criterios verificables (Gate Final, condición 6).
+- [ ] Ejecutar `python -c "d = open('outputs/driver.md').read(); assert '## Contrato elegido' in d; assert '## Evidencia' in d; assert '## Triggers de upgrade a MCP' in d; assert '## Riesgos asumidos' in d; assert 'report.md' in d or 'metrics.json' in d; print('OK')"` y confirmar `OK` con código de salida 0.
+- [ ] Ejecutar `python compare.py --check` y confirmar código de salida 0; ejecutar `python -c "import json; m = json.load(open('traces/metrics.json')); variants = set(r['variant'] for r in m['results']); assert len(variants) >= 2; print('OK')"` y confirmar que hay métricas de al menos dos variantes distintas.

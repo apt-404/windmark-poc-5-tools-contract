@@ -27,9 +27,7 @@ def test_check_output_contains_dependency_table():
     assert "wordlist" in stdout
 
 
-def test_check_returncode_without_fixtures():
-    fixtures_dir = ROOT / "traces" / "fixtures"
-    assert not fixtures_dir.exists() or not any(fixtures_dir.glob("*.json"))
-
+def test_check_returncode_missing_env_deps():
+    # nmap, gobuster y el wordlist no están instalados en el entorno de test
     result = _run_check()
     assert result.returncode == 1

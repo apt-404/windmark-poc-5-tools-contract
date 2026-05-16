@@ -1,0 +1,8 @@
+{
+  "id": "call_gobuster_dir_001",
+  "type": "function",
+  "function": {
+    "name": "gobuster_dir",
+    "arguments": "{\"target\": \"http://192.168.1.1\", \"wordlist\": \"/usr/share/wordlists/dirb/common.txt\", \"extensions\": [\"php\", \"html\", \"txt\"]}"
+  }
+}

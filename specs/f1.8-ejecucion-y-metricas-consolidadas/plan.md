@@ -6,7 +6,7 @@ Se añade soporte de repeticiones al runner para ejecutar N invocaciones por too
 
 ## Soporte de repeticiones en compare.py
 
-- [ ] Añadir el argumento `--repeat N` (int, default `1`) a `compare.py`, modificar el flujo principal para iterar `repeat` veces por cada combinación (variante, tool) escribiendo una línea JSONL por iteración, y actualizar `consolidate_metrics` para incluir en `metrics.json` los campos `repeat`, `duration_ms_mean` y `duration_ms_values` por (variante, tool) cuando `repeat > 1`.
+- [x] Añadir el argumento `--repeat N` (int, default `1`) a `compare.py`, modificar el flujo principal para iterar `repeat` veces por cada combinación (variante, tool) escribiendo una línea JSONL por iteración, y actualizar `consolidate_metrics` para incluir en `metrics.json` los campos `repeat`, `duration_ms_mean` y `duration_ms_values` por (variante, tool) cuando `repeat > 1`.
 
 ## Ejecución real (integración)
 

@@ -19,4 +19,4 @@ Se añade soporte de repeticiones al runner para ejecutar N invocaciones por too
 
 ## Documentación y commit de trazas
 
-- [ ] Añadir en la sección `### Desarrollo local` de `tech-spec.md` el comando exacto del run real con los parámetros de 3 repeticiones, el montaje del volumen de traces y las variables de entorno requeridas (`TARGET_IP`, `WORDLIST_PATH`), con nota de que `TARGET_IP` debe estar definida antes de lanzar el contenedor; ejecutar `git add traces/ tech-spec.md` y commitear con mensaje `data(F1.8): metricas run real HTB`.
+- [x] Añadir en la sección `### Desarrollo local` de `tech-spec.md` el comando exacto del run real con los parámetros de 3 repeticiones, el montaje del volumen de traces y las variables de entorno requeridas (`TARGET_IP`, `WORDLIST_PATH`), con nota de que `TARGET_IP` debe estar definida antes de lanzar el contenedor; ejecutar `git add traces/ tech-spec.md` y commitear con mensaje `data(F1.8): metricas run real HTB`.

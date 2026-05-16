@@ -1,9 +1,12 @@
 import argparse
 import glob
+import json
 import os
+import queue
 import shutil
 import subprocess
 import sys
+import threading
 
 
 def _check_binary(name: str) -> tuple[str, bool]:
@@ -47,6 +50,47 @@ def _print_table(rows: list[tuple[str, bool]]) -> None:
         estado = "OK" if ok else "ERROR"
         print(f"| {name:<{dep_width}} | {estado:<{estado_width}} |")
     print(sep)
+
+
+def start_mcp_server() -> subprocess.Popen:
+    server_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "variant-2-mcp-stdio",
+        "server.py",
+    )
+    return subprocess.Popen(
+        [sys.executable, server_path],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        bufsize=0,
+    )
+
+
+def wait_for_mcp_ready(proc: subprocess.Popen, timeout_s: float) -> bool:
+    message = json.dumps({"jsonrpc": "2.0", "method": "tools/list", "id": 1}) + "\n"
+    try:
+        proc.stdin.write(message.encode("utf-8"))
+        proc.stdin.flush()
+    except (BrokenPipeError, OSError):
+        return False
+
+    response_queue: queue.Queue = queue.Queue()
+
+    def _reader() -> None:
+        try:
+            line = proc.stdout.readline()
+        except Exception:
+            line = b""
+        response_queue.put(line)
+
+    reader_thread = threading.Thread(target=_reader, daemon=True)
+    reader_thread.start()
+    try:
+        line = response_queue.get(timeout=timeout_s)
+    except queue.Empty:
+        return False
+    return bool(line)
 
 
 def run_check() -> int:

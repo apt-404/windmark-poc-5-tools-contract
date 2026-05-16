@@ -14,7 +14,7 @@ Se implementa un servidor FastMCP con transporte stdio que expone `nmap_scan` y 
 
 ## Integración en compare.py
 
-- [ ] Añadir en `compare.py` las funciones `start_mcp_server() -> subprocess.Popen` (arranca `python variant-2-mcp-stdio/server.py` con `stdin=PIPE, stdout=PIPE, stderr=PIPE`) y `wait_for_mcp_ready(proc, timeout_s) -> bool` (envía `{"jsonrpc":"2.0","method":"tools/list","id":1}` por stdin y lee stdout con timeout; devuelve `True` si responde antes de `timeout_s`, `False` en caso contrario); si devuelve `False`, devolver `ToolResult` con `error="mcp_server_timeout"`.
+- [x] Añadir en `compare.py` las funciones `start_mcp_server() -> subprocess.Popen` (arranca `python variant-2-mcp-stdio/server.py` con `stdin=PIPE, stdout=PIPE, stderr=PIPE`) y `wait_for_mcp_ready(proc, timeout_s) -> bool` (envía `{"jsonrpc":"2.0","method":"tools/list","id":1}` por stdin y lee stdout con timeout; devuelve `True` si responde antes de `timeout_s`, `False` en caso contrario); si devuelve `False`, devolver `ToolResult` con `error="mcp_server_timeout"`.
 
 ## Tests
 

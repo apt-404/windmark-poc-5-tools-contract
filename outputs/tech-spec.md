@@ -321,6 +321,15 @@ docker run -e TARGET_IP=192.168.1.1 -v $(pwd)/traces:/app/traces windmark-poc5 \
 
 # Ejecutar solo una variante
 docker run windmark-poc5 python compare.py --target 192.168.1.1 --variant v1
+
+# Run real contra HTB Starting Point con 3 repeticiones por (variante, tool)
+# Nota: TARGET_IP debe estar definida en el entorno del host antes de lanzar el contenedor.
+docker run \
+  -e TARGET_IP=$TARGET_IP \
+  -e WORDLIST_PATH=/usr/share/wordlists/dirb/common.txt \
+  -v $(pwd)/traces:/app/traces \
+  windmark-poc5 \
+  python compare.py --target $TARGET_IP --variant all --tool all --repeat 3
 ```
 
 ---

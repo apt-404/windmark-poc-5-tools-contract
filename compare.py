@@ -130,7 +130,7 @@ def write_jsonl(result, variant: str, tool: str, output_dir: str) -> str:
     return file_path
 
 
-def consolidate_metrics(results: list, output_dir: str) -> str:
+def consolidate_metrics(results: list, output_dir: str, repeat: int = 1) -> str:
     os.makedirs(output_dir, exist_ok=True)
     file_path = os.path.join(output_dir, "metrics.json")
     serialized = []
@@ -157,6 +157,30 @@ def consolidate_metrics(results: list, output_dir: str) -> str:
         "variants_error": variants_error,
         "results": serialized,
     }
+    if repeat > 1:
+        groups: dict[tuple, list[float]] = {}
+        order: list[tuple] = []
+        for r in serialized:
+            key = (r.get("variant"), r.get("tool"))
+            if key not in groups:
+                groups[key] = []
+                order.append(key)
+            groups[key].append(float(r.get("duration_ms", 0.0) or 0.0))
+        summary = []
+        for key in order:
+            variant, tool = key
+            values = groups[key]
+            mean = sum(values) / len(values) if values else 0.0
+            summary.append(
+                {
+                    "variant": variant,
+                    "tool": tool,
+                    "repeat": repeat,
+                    "duration_ms_mean": mean,
+                    "duration_ms_values": values,
+                }
+            )
+        payload["summary"] = summary
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
     return file_path
@@ -457,6 +481,12 @@ def main() -> None:
         default="traces/",
         help="Directorio de salida para JSONL y metrics.json.",
     )
+    parser.add_argument(
+        "--repeat",
+        type=int,
+        default=1,
+        help="Número de repeticiones por combinación (variante, tool).",
+    )
     args = parser.parse_args()
 
     if args.check:
@@ -471,43 +501,46 @@ def main() -> None:
 
     results: list[dict] = []
 
+    repeat = max(1, args.repeat)
+
     for tool in tools:
         for variant in variants:
-            try:
-                if variant == "v1":
-                    result = run_v1(args.target, tool, args.output)
-                elif variant == "v2":
-                    result = run_v2(args.target, tool, args.output)
-                elif variant == "v3":
-                    result = run_v3(args.target, tool, fixture_dir, args.output)
-                else:
+            for _ in range(repeat):
+                try:
+                    if variant == "v1":
+                        result = run_v1(args.target, tool, args.output)
+                    elif variant == "v2":
+                        result = run_v2(args.target, tool, args.output)
+                    elif variant == "v3":
+                        result = run_v3(args.target, tool, fixture_dir, args.output)
+                    else:
+                        result = ToolResult(
+                            raw_output="",
+                            exit_code=-1,
+                            error=f"unknown_variant: {variant}",
+                            duration_ms=0.0,
+                            extra={},
+                        )
+                except Exception as exc:
                     result = ToolResult(
                         raw_output="",
                         exit_code=-1,
-                        error=f"unknown_variant: {variant}",
+                        error=f"unexpected_error: {exc}",
                         duration_ms=0.0,
                         extra={},
                     )
-            except Exception as exc:
-                result = ToolResult(
-                    raw_output="",
-                    exit_code=-1,
-                    error=f"unexpected_error: {exc}",
-                    duration_ms=0.0,
-                    extra={},
-                )
 
-            try:
-                write_jsonl(result, variant, tool, args.output)
-            except Exception as exc:
-                print(
-                    f"warning: no se pudo escribir JSONL para {variant}/{tool}: {exc}",
-                    file=sys.stderr,
-                )
+                try:
+                    write_jsonl(result, variant, tool, args.output)
+                except Exception as exc:
+                    print(
+                        f"warning: no se pudo escribir JSONL para {variant}/{tool}: {exc}",
+                        file=sys.stderr,
+                    )
 
-            results.append(_result_to_record(result, variant, tool))
+                results.append(_result_to_record(result, variant, tool))
 
-    consolidate_metrics(results, args.output)
+    consolidate_metrics(results, args.output, repeat=repeat)
 
     any_ok = any(r.get("error") is None for r in results)
     sys.exit(0 if any_ok else 1)

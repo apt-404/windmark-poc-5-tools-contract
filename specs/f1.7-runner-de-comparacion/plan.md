@@ -18,7 +18,7 @@ Se completa `compare.py` (iniciado en F1.2 con el subcomando `--check`) añadien
 
 ## Flujo principal
 
-- [ ] Implementar el flujo `main()` que selecciona variantes y tools según los argumentos, invoca en orden secuencial V1, V2, V3 para cada tool, llama a `write_jsonl` tras cada invocación, captura cualquier excepción no esperada y la convierte en `ToolResult.error`, llama a `consolidate_metrics` y sale con código 0 si al menos un resultado tiene `error is None`, código 1 si todos tienen error.
+- [x] Implementar el flujo `main()` que selecciona variantes y tools según los argumentos, invoca en orden secuencial V1, V2, V3 para cada tool, llama a `write_jsonl` tras cada invocación, captura cualquier excepción no esperada y la convierte en `ToolResult.error`, llama a `consolidate_metrics` y sale con código 0 si al menos un resultado tiene `error is None`, código 1 si todos tienen error.
 
 ## Tests
 

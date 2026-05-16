@@ -412,6 +412,18 @@ def run_check() -> int:
     return 0 if all_ok else 1
 
 
+def _result_to_record(result: ToolResult, variant: str, tool: str) -> dict:
+    raw_output = getattr(result, "raw_output", "") or ""
+    return {
+        "variant": variant,
+        "tool": tool,
+        "duration_ms": getattr(result, "duration_ms", 0.0),
+        "exit_code": getattr(result, "exit_code", -1),
+        "error": getattr(result, "error", None),
+        "output_summary": raw_output[:200],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="compare runner / healthcheck")
     parser.add_argument(
@@ -450,8 +462,55 @@ def main() -> None:
     if args.check:
         sys.exit(run_check())
 
-    parser.print_help()
-    sys.exit(0)
+    if not args.target:
+        parser.error("--target es obligatorio cuando no se usa --check")
+
+    variants = ["v1", "v2", "v3"] if args.variant == "all" else [args.variant]
+    tools = ["nmap_scan", "gobuster_dir"] if args.tool == "all" else [args.tool]
+    fixture_dir = os.path.join(args.output, "fixtures")
+
+    results: list[dict] = []
+
+    for tool in tools:
+        for variant in variants:
+            try:
+                if variant == "v1":
+                    result = run_v1(args.target, tool, args.output)
+                elif variant == "v2":
+                    result = run_v2(args.target, tool, args.output)
+                elif variant == "v3":
+                    result = run_v3(args.target, tool, fixture_dir, args.output)
+                else:
+                    result = ToolResult(
+                        raw_output="",
+                        exit_code=-1,
+                        error=f"unknown_variant: {variant}",
+                        duration_ms=0.0,
+                        extra={},
+                    )
+            except Exception as exc:
+                result = ToolResult(
+                    raw_output="",
+                    exit_code=-1,
+                    error=f"unexpected_error: {exc}",
+                    duration_ms=0.0,
+                    extra={},
+                )
+
+            try:
+                write_jsonl(result, variant, tool, args.output)
+            except Exception as exc:
+                print(
+                    f"warning: no se pudo escribir JSONL para {variant}/{tool}: {exc}",
+                    file=sys.stderr,
+                )
+
+            results.append(_result_to_record(result, variant, tool))
+
+    consolidate_metrics(results, args.output)
+
+    any_ok = any(r.get("error") is None for r in results)
+    sys.exit(0 if any_ok else 1)
 
 
 if __name__ == "__main__":

@@ -428,12 +428,12 @@
       "feature_title": "F1.9 Reporte comparativo",
       "section": "Análisis de métricas y token footprint",
       "description": "Leer `traces/metrics.json` y calcular: `duration_ms_mean` por `(variant, tool)` excluyendo invocaciones con `error is not None` (documentar cuántas se excluyeron); tasa de éxito por variante como `invocaciones con error is None / total`; token footprint de schema para V1 (`NmapScanInput.model_json_schema()`), V2 (schema `tools/list` de FastMCP) y V3 (`NMAP_SCAN_SCHEMA`) usando `len(json.dumps(schema)) / 4`; imprimir el dict de resultados como JSON para validar antes de usarlo en el reporte.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:04:21.770475+00:00",
+      "completed_at": "2026-05-16T16:07:48.452622+00:00"
     },
     {
       "id": "f1.9-02",
@@ -441,12 +441,12 @@
       "feature_title": "F1.9 Reporte comparativo",
       "section": "Redacción de report.md",
       "description": "Crear `outputs/` si no existe y escribir `outputs/report.md` con las secciones: `## Hipótesis evaluadas` (lista de hipótesis derivadas del tech-spec, p.ej. \"V1 tiene menor latencia que V2 dado el overhead del protocolo MCP\"), `## Métricas comparativas` (tabla con columnas Variante, Tool, duration_ms_mean, tasa_exito, token_footprint_schema; cada valor con nota al pie referenciando el campo de `metrics.json` o archivo de código del que se extrae), y `## Limitaciones` (las tres limitaciones: startup V2 incluido en latencia, token footprint es estimación estática, LLM mockeado en V3 sin latencia real).",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:07:48.453759+00:00",
+      "completed_at": "2026-05-16T16:10:12.093257+00:00"
     },
     {
       "id": "f1.9-03",
@@ -454,12 +454,12 @@
       "feature_title": "F1.9 Reporte comparativo",
       "section": "Tests",
       "description": "Crear `tests/test_report.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_report_contains_required_sections()` lee `outputs/report.md` y verifica que contiene las secciones `## Hipótesis evaluadas`, `## Métricas comparativas` y `## Limitaciones`; `test_report_references_all_variants()` carga `traces/metrics.json`, extrae el conjunto de variantes únicas (`v1`, `v2`, `v3`) y verifica que cada una aparece en el texto de `outputs/report.md`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:10:12.094130+00:00",
+      "completed_at": "2026-05-16T16:11:42.970898+00:00"
     },
     {
       "id": "f1.9-04",
@@ -467,12 +467,12 @@
       "feature_title": "F1.9 Reporte comparativo",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_report.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:11:42.971830+00:00",
+      "completed_at": "2026-05-16T16:12:35.577776+00:00"
     },
     {
       "id": "f1.10-01",

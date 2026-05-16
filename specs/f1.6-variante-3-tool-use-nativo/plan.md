@@ -10,7 +10,7 @@ Se implementa `variant-3-native-tooluse/tools.py` con los schemas de las dos too
 
 ## Función run_nmap
 
-- [ ] Implementar `run_nmap(fixture_path: str) -> ToolResult` en `tools.py`: abrir fixture con `json.load()` capturando `FileNotFoundError` (devolver `ToolResult` con `error=f"fixture not found: {fixture_path}"`); extraer `params = json.loads(data["function"]["arguments"])`; construir y ejecutar el comando nmap con timeout 30 s; parsear output con regex; devolver `ToolResult`; capturar `TimeoutExpired` con `error="timeout"`.
+- [x] Implementar `run_nmap(fixture_path: str) -> ToolResult` en `tools.py`: abrir fixture con `json.load()` capturando `FileNotFoundError` (devolver `ToolResult` con `error=f"fixture not found: {fixture_path}"`); extraer `params = json.loads(data["function"]["arguments"])`; construir y ejecutar el comando nmap con timeout 30 s; parsear output con regex; devolver `ToolResult`; capturar `TimeoutExpired` con `error="timeout"`.
 
 ## Función run_gobuster
 

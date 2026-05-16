@@ -3,6 +3,6 @@
   "type": "function",
   "function": {
     "name": "nmap_scan",
-    "arguments": "{\"target\": \"192.168.1.1\", \"ports\": \"1-1000\", \"flags\": [\"-sV\"]}"
+    "arguments": "{\"target\": \"10.129.160.94\", \"ports\": \"1-1000\", \"flags\": [\"-Pn\", \"-sV\"]}"
   }
 }

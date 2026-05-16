@@ -21,12 +21,13 @@ Métricas de la variante elegida (V1) sobre las dos tools del catálogo. Fuente:
 
 | Tool | duration_ms_mean | tasa_exito | token_footprint_schema |
 |---|---|---|---|
-| nmap_scan    | _pendiente F1.8_ [^dm-v1] | _pendiente F1.8_ [^sr-v1] | 69 [^tf-v1] |
-| gobuster_dir | _pendiente F1.8_ [^dm-v1] | _pendiente F1.8_ [^sr-v1] | 69 [^tf-v1] |
+| nmap_scan    | 10 080.6 ms [^dm-v1] | 100 % (3/3) [^sr-v1] | 69 [^tf-v1] |
+| gobuster_dir | 6 683.2 ms [^dm-v1] [^gb-v1] | 0 % (0/3) [^gb-v1] | 69 [^tf-v1] |
 
-[^dm-v1]: Campo derivado de `traces/metrics.json` → `results[].duration_ms` filtrado por `results[].variant == "v1"` y agrupado por `results[].tool`, excluyendo registros con `error is not None`. Calculado por `report_analysis.compute_duration_means()` (`report.md` nota `[^dm]`).
-[^sr-v1]: Campo derivado de `traces/metrics.json` → `count(results[].error is None) / count(results[])` con filtro `results[].variant == "v1"`. Calculado por `report_analysis.compute_success_rate()` (`report.md` nota `[^sr]`).
-[^tf-v1]: Métrica estática `len(json.dumps(NmapScanInput.model_json_schema())) // 4` sobre `shared/models.py:NmapScanInput` (`report.md` nota `[^tfv1]`). No proviene de `traces/metrics.json`: es estimación derivada del código fuente del contrato de V1.
+[^dm-v1]: Media de `results[].duration_ms` de `traces/metrics.json` filtrado por `variant == "v1"`, agrupado por `tool`, sobre 3 repeticiones del run real HTB 2026-05-16 contra `10.129.160.94` con flags `-Pn -sV` (`report.md` nota `[^dm]`).
+[^sr-v1]: `count(error is None) / 3` filtrado por `variant == "v1"` y agrupado por `tool` (`report.md` nota `[^sr]`).
+[^gb-v1]: `gobuster_dir` falla porque el puerto 80 está cerrado en el target HTB (confirmado por nmap). La media de 6 683.2 ms está sesgada: 2 repeticiones timeout HTTP (10 s) + 1 connection refused rápido (38 ms). No es un fallo del contrato V1 (`report.md` nota `[^gb-fail]`).
+[^tf-v1]: Métrica estática `len(json.dumps(NmapScanInput.model_json_schema())) // 4` sobre `shared/models.py:NmapScanInput` (`report.md` nota `[^tfv1]`).
 
 ---
 

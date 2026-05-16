@@ -3,11 +3,11 @@
 > [!abstract] Metadata
 > | | |
 > |---|---|
-> | **Status** | 🟡 Draft |
+> | **Status** | 🟢 Completed |
 > | **Owner** | Carlos Granden |
 > | **Created** | 2026-05-15 |
-> | **Updated** | 2026-05-15 |
-> | **Version** | v0.1 |
+> | **Updated** | 2026-05-16 |
+> | **Version** | v1.0 |
 > | **Issue tracking** | [KB #6](https://github.com/apt-404/windmark-knowledge-base/issues/6) |
 > | **ADR a decidir** | [ADR-003](https://github.com/apt-404/windmark-knowledge-base/blob/main/specs/mvp/tech-spec.md#adr-003-tools-in-process-con-subprocess-rechazo-de-mcp-en-mvp) |
 > | **Bloquea a** | PoC #4 (orquestación) · F0.5 (catálogo de tools Tier 0 del MVP) |
@@ -114,7 +114,7 @@ Tool de reconocimiento de red. Parametrización mínima para demostrar el contra
 |-------|------|---------|-------------|
 | `target` | `str` | ✳️ required | IP o hostname a escanear |
 | `ports` | `str` | `"1-1000"` | Rango de puertos |
-| `flags` | `list[str]` | `["-sV"]` | Flags adicionales de nmap |
+| `flags` | `list[str]` | `["-Pn", "-sV"]` | Flags adicionales de nmap |
 
 Output esperado: `{ open_ports: [...], service_fingerprints: [...], raw_output: str }`.
 
@@ -181,27 +181,36 @@ Cada invocación de tool produce una línea JSONL en `traces/<variant>/<tool>/<t
 > [!abstract]- File tree
 > ```
 > windmark-poc-5-tools-contract/
-> ├── README.md                       # Overview, objetivo y ubicación en el roadmap
-> ├── AGENTS.md                       # Documentos de referencia del KB para agentes
-> ├── tech-spec.md                    # Cómo está implementado cada variante
-> ├── report.md                       # Qué se probó y qué métricas salieron
-> ├── driver.md                       # Decisión final sobre ADR-003
-> ├── compare.py                      # Runner de comparación entre variantes
-> ├── variant-1-subprocess/           # Subprocess + Pydantic in-process
-> │   ├── nmap_scan.py                # Tool nmap: función pura, Pydantic in/out
-> │   └── gobuster_dir.py             # Tool gobuster: función pura, Pydantic in/out
-> ├── variant-2-mcp-stdio/            # MCP server local por stdio
-> │   ├── server.py                   # Servidor MCP que expone las tools
-> │   └── tools/                      # nmap_scan y gobuster_dir como MCP tools
-> ├── variant-3-native-tooluse/       # Tool-use nativo del provider
-> │   └── tools.py                    # JSON schema directo sin Pydantic
-> ├── outputs/                        # Artefactos generados (specs, reports)
-> │   └── product-spec.md             # Este fichero
-> └── traces/                         # Trazas de invocación end-to-end
+> ├── README.md                        # Overview, objetivo, setup WSL y ubicación en roadmap
+> ├── AGENTS.md                        # Documentos de referencia del KB para agentes
+> ├── compare.py                       # Runner de comparación entre variantes
+> ├── Dockerfile                       # Imagen con Python 3.12 + uv + nmap + gobuster
+> ├── pyproject.toml                   # Dependencias Python (uv)
+> ├── specs/                           # Especificaciones de la PoC
+> │   ├── product-spec.md              # Este fichero
+> │   ├── tech-spec.md                 # Cómo está implementado cada variante
+> │   └── roadmap.md                   # Fases, features y gates de cierre
+> ├── outputs/                         # Artefactos generados
+> │   ├── report.md                    # Métricas comparativas y hallazgos
+> │   ├── report.html                  # Dashboard visual del report
+> │   ├── driver.md                    # Decisión final sobre ADR-003
+> │   └── variants-clarifications.md  # Aclaración de alcance por variante
+> ├── shared/
+> │   └── models.py                    # ToolInput y ToolResult compartidos
+> ├── variant-1-subprocess/            # Subprocess + Pydantic in-process
+> │   ├── nmap_scan.py
+> │   └── gobuster_dir.py
+> ├── variant-2-mcp-stdio/             # MCP server local por stdio
+> │   ├── server.py
+> │   └── tools/
+> ├── variant-3-native-tooluse/        # Tool-use nativo del provider
+> │   └── tools.py
+> └── traces/                          # Trazas de invocación end-to-end
+>     ├── fixtures/                    # Fixtures LLM pregrabadas (V3)
 >     ├── v1/
 >     ├── v2/
 >     ├── v3/
->     └── metrics.json                # Consolidado comparativo
+>     └── metrics.json                 # Consolidado comparativo
 > ```
 
 ---
@@ -228,7 +237,7 @@ Cada invocación de tool produce una línea JSONL en `traces/<variant>/<tool>/<t
 
 ## ❓ Discovery
 
-- [ ] **Triggers exactos de migración a MCP** — Las tres condiciones (segundo cliente, aislamiento por blast radius, demanda comercial) están definidas cualitativamente. La PoC debe cerrar con condiciones verificables: ¿qué cuenta como "segundo cliente"? ¿qué blast radius justifica un container separado?
+- [x] ~~Triggers exactos de migración a MCP~~ → Documentados en `outputs/driver.md`: (1) segundo cliente independiente del catálogo, (2) tool con blast radius que requiere aislamiento de contenedor, (3) demanda explícita de protocolo MCP por cliente externo. Criterios verificables y condiciones negativas cerradas.
 - [x] ~~Número de variantes~~ → Tres variantes en paralelo con runner de comparación
 - [x] ~~Alcance de tools~~ → `nmap_scan` y `gobuster_dir` sobre Tier 0, sin LLM en el loop
 - [x] ~~LLM en el loop~~ → Excluido del scope; el runner invoca las tools directamente

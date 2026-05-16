@@ -189,6 +189,190 @@ def run_v1(target: str, tool: str, output_dir: str) -> ToolResult:
     return result
 
 
+def _read_mcp_line(proc: subprocess.Popen, timeout_s: float) -> bytes:
+    response_queue: queue.Queue = queue.Queue()
+
+    def _reader() -> None:
+        try:
+            line = proc.stdout.readline()
+        except Exception:
+            line = b""
+        response_queue.put(line)
+
+    reader_thread = threading.Thread(target=_reader, daemon=True)
+    reader_thread.start()
+    try:
+        return response_queue.get(timeout=timeout_s)
+    except queue.Empty:
+        return b""
+
+
+def _send_mcp(proc: subprocess.Popen, payload: dict) -> None:
+    data = (json.dumps(payload) + "\n").encode("utf-8")
+    proc.stdin.write(data)
+    proc.stdin.flush()
+
+
+def run_v2(
+    target: str,
+    tool: str,
+    output_dir: str,
+    timeout_s: float = 10.0,
+) -> ToolResult:
+    start = time.perf_counter()
+    proc = None
+    try:
+        proc = start_mcp_server()
+    except Exception as exc:
+        duration_ms = (time.perf_counter() - start) * 1000
+        return ToolResult(
+            raw_output="",
+            exit_code=-1,
+            error=f"v2_error: {exc}",
+            duration_ms=duration_ms,
+            extra={},
+        )
+
+    try:
+        if not wait_for_mcp_ready(proc, timeout_s):
+            duration_ms = (time.perf_counter() - start) * 1000
+            return ToolResult(
+                raw_output="",
+                exit_code=-1,
+                error="mcp_server_timeout",
+                duration_ms=duration_ms,
+                extra={},
+            )
+
+        try:
+            _send_mcp(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 100,
+                    "method": "initialize",
+                    "params": {
+                        "protocolVersion": "2024-11-05",
+                        "capabilities": {},
+                        "clientInfo": {"name": "compare-runner", "version": "1"},
+                    },
+                },
+            )
+            init_line = _read_mcp_line(proc, timeout_s)
+            if not init_line:
+                duration_ms = (time.perf_counter() - start) * 1000
+                return ToolResult(
+                    raw_output="",
+                    exit_code=-1,
+                    error="mcp_server_timeout",
+                    duration_ms=duration_ms,
+                    extra={},
+                )
+            _send_mcp(
+                proc,
+                {"jsonrpc": "2.0", "method": "notifications/initialized"},
+            )
+
+            if tool == "nmap_scan":
+                arguments = {"target": target, "ports": "1-1000", "flags": ["-sV"]}
+            elif tool == "gobuster_dir":
+                wordlist = os.environ.get(
+                    "WORDLIST_PATH", "/usr/share/wordlists/dirb/common.txt"
+                )
+                arguments = {
+                    "target": target,
+                    "wordlist": wordlist,
+                    "extensions": [],
+                }
+            else:
+                raise ValueError(f"unknown tool: {tool}")
+
+            _send_mcp(
+                proc,
+                {
+                    "jsonrpc": "2.0",
+                    "id": 101,
+                    "method": "tools/call",
+                    "params": {"name": tool, "arguments": arguments},
+                },
+            )
+
+            call_line = _read_mcp_line(proc, timeout_s)
+            if not call_line:
+                duration_ms = (time.perf_counter() - start) * 1000
+                return ToolResult(
+                    raw_output="",
+                    exit_code=-1,
+                    error="v2_no_response",
+                    duration_ms=duration_ms,
+                    extra={},
+                )
+
+            response = json.loads(call_line.decode("utf-8"))
+        except Exception as exc:
+            duration_ms = (time.perf_counter() - start) * 1000
+            return ToolResult(
+                raw_output="",
+                exit_code=-1,
+                error=f"v2_error: {exc}",
+                duration_ms=duration_ms,
+                extra={},
+            )
+
+        duration_ms = (time.perf_counter() - start) * 1000
+
+        if "error" in response:
+            return ToolResult(
+                raw_output="",
+                exit_code=-1,
+                error=f"v2_error: {response['error']}",
+                duration_ms=duration_ms,
+                extra={},
+            )
+
+        result_data = response.get("result", {}) or {}
+        structured = result_data.get("structuredContent") or {}
+        content = result_data.get("content") or []
+        is_error = bool(result_data.get("isError", False))
+
+        raw_output = ""
+        exit_code = 0 if not is_error else -1
+        error = None
+        extra: dict = {}
+
+        if isinstance(structured, dict) and structured:
+            raw_output = structured.get("raw_output", "") or ""
+            exit_code = structured.get("exit_code", exit_code)
+            error = structured.get("error")
+            extra = structured.get("extra", {}) or {}
+        elif content:
+            texts = [
+                c.get("text", "")
+                for c in content
+                if isinstance(c, dict) and c.get("type") == "text"
+            ]
+            raw_output = "\n".join(texts)
+
+        return ToolResult(
+            raw_output=raw_output,
+            exit_code=exit_code,
+            error=error,
+            duration_ms=duration_ms,
+            extra=extra,
+        )
+    finally:
+        if proc is not None:
+            try:
+                proc.terminate()
+                try:
+                    proc.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+                    proc.wait(timeout=2)
+            except Exception:
+                pass
+
+
 def run_v3(target: str, tool: str, fixture_dir: str, output_dir: str) -> ToolResult:
     start = time.perf_counter()
     try:

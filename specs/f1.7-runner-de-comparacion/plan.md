@@ -14,7 +14,7 @@ Se completa `compare.py` (iniciado en F1.2 con el subcomando `--check`) añadien
 
 ## Función de invocación V2 (MCP)
 
-- [ ] Implementar `run_v2(target, tool, output_dir, timeout_s) -> ToolResult` que arranca el proceso FastMCP con `start_mcp_server()`, espera confirmación con `wait_for_mcp_ready()`, envía la invocación JSON-RPC para la tool solicitada y captura la respuesta; si el server no arranca en `timeout_s`, devuelve `ToolResult` con `error="mcp_server_timeout"`.
+- [x] Implementar `run_v2(target, tool, output_dir, timeout_s) -> ToolResult` que arranca el proceso FastMCP con `start_mcp_server()`, espera confirmación con `wait_for_mcp_ready()`, envía la invocación JSON-RPC para la tool solicitada y captura la respuesta; si el server no arranca en `timeout_s`, devuelve `ToolResult` con `error="mcp_server_timeout"`.
 
 ## Flujo principal
 

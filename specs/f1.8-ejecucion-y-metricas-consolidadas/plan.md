@@ -14,7 +14,7 @@ Se añade soporte de repeticiones al runner para ejecutar N invocaciones por too
 
 ## Tests
 
-- [ ] Crear `tests/test_compare_repeat.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_repeat_argument_iterates_n_times(tmp_path)` usa `unittest.mock.patch` para interceptar las funciones de invocación de variantes y llama al flujo `main()` con `--repeat 2 --variant v1 --tool nmap_scan --target 127.0.0.1 --output str(tmp_path)`, verificando que la función de invocación se llamó exactamente 2 veces; `test_metrics_contains_mean_when_repeat_gt_1(tmp_path)` llama a `consolidate_metrics` con una lista de resultados simulados con `repeat=2` y verifica que `metrics.json` incluye el campo `duration_ms_mean` en al menos una entrada.
+- [x] Crear `tests/test_compare_repeat.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_repeat_argument_iterates_n_times(tmp_path)` usa `unittest.mock.patch` para interceptar las funciones de invocación de variantes y llama al flujo `main()` con `--repeat 2 --variant v1 --tool nmap_scan --target 127.0.0.1 --output str(tmp_path)`, verificando que la función de invocación se llamó exactamente 2 veces; `test_metrics_contains_mean_when_repeat_gt_1(tmp_path)` llama a `consolidate_metrics` con una lista de resultados simulados con `repeat=2` y verifica que `metrics.json` incluye el campo `duration_ms_mean` en al menos una entrada.
 - [ ] Ejecutar `pytest tests/test_compare_repeat.py -v` y confirmar exit code 0.
 
 ## Documentación y commit de trazas

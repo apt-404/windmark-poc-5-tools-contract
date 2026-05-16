@@ -14,7 +14,7 @@ Se implementa `variant-3-native-tooluse/tools.py` con los schemas de las dos too
 
 ## Función run_gobuster
 
-- [ ] Implementar `run_gobuster(fixture_path: str) -> ToolResult` en `tools.py` con la misma estructura: leer fixture, extraer `target`, `wordlist` y `extensions` con `params.get()`; construir y ejecutar el comando gobuster con timeout 30 s; parsear output con regex; devolver `ToolResult`; capturar `TimeoutExpired`.
+- [x] Implementar `run_gobuster(fixture_path: str) -> ToolResult` en `tools.py` con la misma estructura: leer fixture, extraer `target`, `wordlist` y `extensions` con `params.get()`; construir y ejecutar el comando gobuster con timeout 30 s; parsear output con regex; devolver `ToolResult`; capturar `TimeoutExpired`.
 
 ## Tests
 

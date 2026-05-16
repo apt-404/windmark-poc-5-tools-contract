@@ -7,6 +7,7 @@ from shared.models import ToolResult
 
 TIMEOUT_SECONDS = 30
 _OPEN_PORT_RE = re.compile(r"(\d+)/tcp\s+open\s+(\S+)")
+_GOBUSTER_PATH_RE = re.compile(r"^(/\S+)\s+\(Status:\s*(\d+)\)", re.MULTILINE)
 
 
 NMAP_SCAN_SCHEMA = {
@@ -119,6 +120,78 @@ def run_nmap(fixture_path: str) -> ToolResult:
     extra = {
         "open_ports": open_ports,
         "service_fingerprints": service_fingerprints,
+    }
+
+    error = None
+    if completed.returncode != 0:
+        error = (completed.stderr or "").strip() or f"exit_code={completed.returncode}"
+
+    return ToolResult(
+        raw_output=stdout,
+        exit_code=completed.returncode,
+        error=error,
+        duration_ms=duration_ms,
+        extra=extra,
+    )
+
+
+def run_gobuster(fixture_path: str) -> ToolResult:
+    try:
+        with open(fixture_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return ToolResult(
+            raw_output="",
+            exit_code=-1,
+            error=f"fixture not found: {fixture_path}",
+            duration_ms=0.0,
+            extra={},
+        )
+
+    params = json.loads(data["function"]["arguments"])
+    target = params["target"]
+    wordlist = params["wordlist"]
+    extensions = params.get("extensions", [])
+
+    cmd = ["gobuster", "dir", "-u", target, "-w", wordlist]
+    if extensions:
+        cmd += ["-x", ",".join(extensions)]
+
+    start = time.perf_counter()
+    try:
+        completed = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as exc:
+        duration_ms = (time.perf_counter() - start) * 1000
+        partial = exc.stdout or ""
+        if isinstance(partial, bytes):
+            partial = partial.decode("utf-8", errors="replace")
+        return ToolResult(
+            raw_output=partial,
+            exit_code=-1,
+            error="timeout",
+            duration_ms=duration_ms,
+            extra={},
+        )
+
+    duration_ms = (time.perf_counter() - start) * 1000
+    stdout = completed.stdout or ""
+
+    found_paths: list[str] = []
+    status_codes: dict[str, int] = {}
+    for match in _GOBUSTER_PATH_RE.finditer(stdout):
+        path = match.group(1)
+        status = int(match.group(2))
+        found_paths.append(path)
+        status_codes[path] = status
+
+    extra = {
+        "found_paths": found_paths,
+        "status_codes": status_codes,
     }
 
     error = None

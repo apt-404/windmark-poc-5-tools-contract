@@ -1,5 +1,6 @@
 import argparse
 import glob
+import importlib.util
 import json
 import os
 import queue
@@ -7,7 +8,22 @@ import shutil
 import subprocess
 import sys
 import threading
+import time
 from datetime import datetime, timezone
+from pathlib import Path
+
+from shared.models import GobusterDirInput, NmapScanInput, ToolResult
+
+_ROOT = Path(__file__).resolve().parent
+_V1_DIR = _ROOT / "variant-1-subprocess"
+_V3_DIR = _ROOT / "variant-3-native-tooluse"
+
+
+def _load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _check_binary(name: str) -> tuple[str, bool]:
@@ -144,6 +160,56 @@ def consolidate_metrics(results: list, output_dir: str) -> str:
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
     return file_path
+
+
+def run_v1(target: str, tool: str, output_dir: str) -> ToolResult:
+    start = time.perf_counter()
+    try:
+        if tool == "nmap_scan":
+            module = _load_module("v1_nmap_scan", _V1_DIR / "nmap_scan.py")
+            result = module.run(NmapScanInput(target=target))
+        elif tool == "gobuster_dir":
+            wordlist = os.environ.get(
+                "WORDLIST_PATH", "/usr/share/wordlists/dirb/common.txt"
+            )
+            module = _load_module("v1_gobuster_dir", _V1_DIR / "gobuster_dir.py")
+            result = module.run(GobusterDirInput(target=target, wordlist=wordlist))
+        else:
+            raise ValueError(f"unknown tool: {tool}")
+    except Exception as exc:
+        duration_ms = (time.perf_counter() - start) * 1000
+        return ToolResult(
+            raw_output="",
+            exit_code=-1,
+            error=f"v1_error: {exc}",
+            duration_ms=duration_ms,
+            extra={},
+        )
+    result.duration_ms = (time.perf_counter() - start) * 1000
+    return result
+
+
+def run_v3(target: str, tool: str, fixture_dir: str, output_dir: str) -> ToolResult:
+    start = time.perf_counter()
+    try:
+        module = _load_module("v3_tools", _V3_DIR / "tools.py")
+        fixture_path = os.path.join(fixture_dir, f"{tool}.json")
+        if tool == "nmap_scan":
+            result = module.run_nmap(fixture_path)
+        elif tool == "gobuster_dir":
+            result = module.run_gobuster(fixture_path)
+        else:
+            raise ValueError(f"unknown tool: {tool}")
+    except Exception as exc:
+        duration_ms = (time.perf_counter() - start) * 1000
+        return ToolResult(
+            raw_output="",
+            exit_code=-1,
+            error=f"v3_error: {exc}",
+            duration_ms=duration_ms,
+            extra={},
+        )
+    return result
 
 
 def run_check() -> int:

@@ -10,7 +10,7 @@ Se completa `compare.py` (iniciado en F1.2 con el subcomando `--check`) añadien
 
 ## Funciones de invocación V1 y V3
 
-- [ ] Implementar `run_v1(target, tool, output_dir) -> ToolResult` que importa `run()` del módulo V1 correspondiente y mide `duration_ms` con `time.perf_counter()`; implementar `run_v3(target, tool, fixture_dir, output_dir) -> ToolResult` que importa `run_nmap` o `run_gobuster` de V3 con la ruta de fixture correspondiente.
+- [x] Implementar `run_v1(target, tool, output_dir) -> ToolResult` que importa `run()` del módulo V1 correspondiente y mide `duration_ms` con `time.perf_counter()`; implementar `run_v3(target, tool, fixture_dir, output_dir) -> ToolResult` que importa `run_nmap` o `run_gobuster` de V3 con la ruta de fixture correspondiente.
 
 ## Función de invocación V2 (MCP)
 

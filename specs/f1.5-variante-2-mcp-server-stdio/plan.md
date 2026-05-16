@@ -6,7 +6,7 @@ Se implementa un servidor FastMCP con transporte stdio que expone `nmap_scan` y 
 
 ## Tools MCP
 
-- [ ] Crear el directorio `variant-2-mcp-stdio/` y `variant-2-mcp-stdio/tools/` con sus respectivos `__init__.py` vacíos; crear `variant-2-mcp-stdio/tools/nmap_scan.py` con `nmap_scan(target: str, ports: str = "1-1000", flags: list[str] = None) -> dict` y `variant-2-mcp-stdio/tools/gobuster_dir.py` con `gobuster_dir(target: str, wordlist: str, extensions: list[str] = None) -> dict`, cada uno con `subprocess.run()`, parseo regex y retorno de dict compatible con los campos de `ToolResult`.
+- [x] Crear el directorio `variant-2-mcp-stdio/` y `variant-2-mcp-stdio/tools/` con sus respectivos `__init__.py` vacíos; crear `variant-2-mcp-stdio/tools/nmap_scan.py` con `nmap_scan(target: str, ports: str = "1-1000", flags: list[str] = None) -> dict` y `variant-2-mcp-stdio/tools/gobuster_dir.py` con `gobuster_dir(target: str, wordlist: str, extensions: list[str] = None) -> dict`, cada uno con `subprocess.run()`, parseo regex y retorno de dict compatible con los campos de `ToolResult`.
 
 ## Servidor FastMCP
 

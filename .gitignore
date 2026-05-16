@@ -1,0 +1,45 @@
+# Claude Code — configuración local
+.claude/settings.local.json
+.claude/settings.local.*.json
+
+# Variables de entorno y secretos
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# uv
+.python-version
+
+# Logs del agentic loop
+logs/
+
+# Trazas de ejecución real (se commitean manualmente tras el run)
+traces/v1/
+traces/v2/
+traces/v3/
+traces/metrics.json
+
+# Docker
+*.tar
+
+# OS
+.DS_Store
+Thumbs.db

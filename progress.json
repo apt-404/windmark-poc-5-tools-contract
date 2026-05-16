@@ -168,12 +168,12 @@
       "feature_title": "F1.4 Variante 1: subprocess + Pydantic",
       "section": "Módulo nmap_scan",
       "description": "Crear el directorio `variant-1-subprocess/` con `__init__.py` vacío y `nmap_scan.py` con la función `run(input: NmapScanInput) -> ToolResult` completa: construir el comando `[\"nmap\"] + input.flags + [\"-p\", input.ports, input.target]`, ejecutar con `subprocess.run(..., capture_output=True, text=True, timeout=30)`, parsear `stdout` con regex `r\"(\\d+)/tcp\\s+open\\s+(\\S+)\"` para extraer `open_ports` y `service_fingerprints`, asignar `extra` y capturar `TimeoutExpired` con `error=\"timeout\"`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:25:56+00:00",
+      "completed_at": "2026-05-16T15:27:01+00:00"
     },
     {
       "id": "f1.4-02",
@@ -181,12 +181,12 @@
       "feature_title": "F1.4 Variante 1: subprocess + Pydantic",
       "section": "Módulo gobuster_dir",
       "description": "Crear `variant-1-subprocess/gobuster_dir.py` con la función `run(input: GobusterDirInput) -> ToolResult` completa: construir el comando gobuster añadiendo `-x` y `\",\".join(input.extensions)` si `extensions` no está vacío, ejecutar con `subprocess.run()` con timeout 30 s, parsear `stdout` con regex `r\"(/\\S+)\\s+\\(Status:\\s+(\\d+)\\)\"` para extraer `found_paths` y `status_codes`, asignar `extra` y capturar `TimeoutExpired`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:27:01+00:00",
+      "completed_at": "2026-05-16T15:28:44+00:00"
     },
     {
       "id": "f1.4-03",
@@ -194,12 +194,12 @@
       "feature_title": "F1.4 Variante 1: subprocess + Pydantic",
       "section": "Tests",
       "description": "Crear `tests/test_variant1.py` con tres funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_run_nmap_returns_tool_result()` usa `unittest.mock.patch(\"subprocess.run\")` configurado con `returncode=0, stdout=\"\", stderr=\"\"` y verifica que `run_nmap(NmapScanInput(target=\"127.0.0.1\"))` devuelve un `ToolResult` con `exit_code is not None` e `isinstance(extra, dict)`; `test_run_gobuster_returns_tool_result()` hace lo equivalente para `run_gobuster`; `test_run_nmap_timeout_sets_error()` configura `subprocess.run` para lanzar `subprocess.TimeoutExpired` y verifica que `ToolResult.error == \"timeout\"`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:28:44+00:00",
+      "completed_at": "2026-05-16T15:29:16+00:00"
     },
     {
       "id": "f1.4-04",
@@ -207,12 +207,12 @@
       "feature_title": "F1.4 Variante 1: subprocess + Pydantic",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_variant1.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:29:16+00:00",
+      "completed_at": "2026-05-16T15:29:30+00:00"
     },
     {
       "id": "f1.5-01",

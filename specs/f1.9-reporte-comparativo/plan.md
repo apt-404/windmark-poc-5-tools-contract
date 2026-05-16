@@ -10,7 +10,7 @@ Se genera `outputs/report.md` a partir de `traces/metrics.json` y del análisis 
 
 ## Redacción de report.md
 
-- [ ] Crear `outputs/` si no existe y escribir `outputs/report.md` con las secciones: `## Hipótesis evaluadas` (lista de hipótesis derivadas del tech-spec, p.ej. "V1 tiene menor latencia que V2 dado el overhead del protocolo MCP"), `## Métricas comparativas` (tabla con columnas Variante, Tool, duration_ms_mean, tasa_exito, token_footprint_schema; cada valor con nota al pie referenciando el campo de `metrics.json` o archivo de código del que se extrae), y `## Limitaciones` (las tres limitaciones: startup V2 incluido en latencia, token footprint es estimación estática, LLM mockeado en V3 sin latencia real).
+- [x] Crear `outputs/` si no existe y escribir `outputs/report.md` con las secciones: `## Hipótesis evaluadas` (lista de hipótesis derivadas del tech-spec, p.ej. "V1 tiene menor latencia que V2 dado el overhead del protocolo MCP"), `## Métricas comparativas` (tabla con columnas Variante, Tool, duration_ms_mean, tasa_exito, token_footprint_schema; cada valor con nota al pie referenciando el campo de `metrics.json` o archivo de código del que se extrae), y `## Limitaciones` (las tres limitaciones: startup V2 incluido en latencia, token footprint es estimación estática, LLM mockeado en V3 sin latencia real).
 
 ## Tests
 

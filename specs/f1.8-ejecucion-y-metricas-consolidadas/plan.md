@@ -8,10 +8,14 @@ Se añade soporte de repeticiones al runner para ejecutar N invocaciones por too
 
 - [ ] Añadir el argumento `--repeat N` (int, default `1`) a `compare.py`, modificar el flujo principal para iterar `repeat` veces por cada combinación (variante, tool) escribiendo una línea JSONL por iteración, y actualizar `consolidate_metrics` para incluir en `metrics.json` los campos `repeat`, `duration_ms_mean` y `duration_ms_values` por (variante, tool) cuando `repeat > 1`.
 
-## Verificación de entorno y ejecución del run real
+## Ejecución real (integración)
 
 - [ ] Ejecutar `docker run -e TARGET_IP=$TARGET_IP windmark-poc5 python compare.py --check` y confirmar código de salida 0; a continuación ejecutar el run completo: `docker run -e TARGET_IP=$TARGET_IP -e WORDLIST_PATH=/usr/share/wordlists/dirb/common.txt -v $(pwd)/traces:/app/traces windmark-poc5 python compare.py --target $TARGET_IP --variant all --tool all --repeat 3` y confirmar código de salida 0.
-- [ ] Verificar con `python -c "import json; m = json.load(open('traces/metrics.json')); assert m['total_invocations'] >= 6, f'solo {m[\"total_invocations\"]} invocaciones'; assert any('duration_ms_mean' in str(r) for r in m['results']); print('OK')"` que `metrics.json` contiene al menos 6 invocaciones y los campos de media.
+
+## Tests
+
+- [ ] Crear `tests/test_compare_repeat.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_repeat_argument_iterates_n_times(tmp_path)` usa `unittest.mock.patch` para interceptar las funciones de invocación de variantes y llama al flujo `main()` con `--repeat 2 --variant v1 --tool nmap_scan --target 127.0.0.1 --output str(tmp_path)`, verificando que la función de invocación se llamó exactamente 2 veces; `test_metrics_contains_mean_when_repeat_gt_1(tmp_path)` llama a `consolidate_metrics` con una lista de resultados simulados con `repeat=2` y verifica que `metrics.json` incluye el campo `duration_ms_mean` en al menos una entrada.
+- [ ] Ejecutar `pytest tests/test_compare_repeat.py -v` y confirmar exit code 0.
 
 ## Documentación y commit de trazas
 

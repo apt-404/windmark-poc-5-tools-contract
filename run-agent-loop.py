@@ -10,7 +10,7 @@ El orquestador crea la rama feat/<feature> al inicio de cada feature, abre una P
 terminar la feature y espera a que el usuario haga merge antes de continuar.
 
 Estados: pending -> ongoing -> done | blocked
-El script gestiona tasks.json; los agentes actualizan progress.md.
+El script gestiona progress.json (única fuente de verdad); los agentes solo ejecutan y emiten señal.
 """
 
 import argparse
@@ -20,10 +20,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-TASKS_PATH = Path("tasks.json")
-PROGRESS_PATH = Path("progress.md")
+TASKS_PATH = Path("progress.json")
 AGENT_PROMPT_PATH = Path("agent-prompt.md")
 AGENTS_DIR = Path(".claude/agents")
+SPECS_DIR = Path("specs")
 LOGS_DIR = Path("logs/agent-loop")
 
 
@@ -59,7 +59,22 @@ def set_status(data: dict, task_id: str, status: str, error: str | None = None) 
             return
 
 
-def build_prompt(task: dict) -> str:
+def feature_status_summary(data: dict, feature: str) -> str:
+    tasks = [t for t in data["tasks"] if t["feature"] == feature]
+    done = [t["id"] for t in tasks if t["status"] == "done"]
+    blocked = [t["id"] for t in tasks if t["status"] == "blocked"]
+    pending = [t["id"] for t in tasks if t["status"] in ("pending", "ongoing")]
+    lines = []
+    if done:
+        lines.append(f"Completadas : {', '.join(done)}")
+    if blocked:
+        lines.append(f"Bloqueadas  : {', '.join(blocked)}")
+    if pending:
+        lines.append(f"Pendientes  : {', '.join(pending)}")
+    return "\n".join(lines) if lines else "Sin tareas previas en esta feature."
+
+
+def build_prompt(task: dict, data: dict) -> str:
     agent_type = task.get("agent_type", "default-agent")
     agent_file = AGENTS_DIR / f"{agent_type}.md"
     agent_instructions = (
@@ -67,10 +82,12 @@ def build_prompt(task: dict) -> str:
     )
 
     template = AGENT_PROMPT_PATH.read_text(encoding="utf-8")
-    progress = (
-        PROGRESS_PATH.read_text(encoding="utf-8")
-        if PROGRESS_PATH.exists()
-        else "(sin progreso aun)"
+
+    plan_path = SPECS_DIR / task["feature"] / "plan.md"
+    plan = (
+        plan_path.read_text(encoding="utf-8")
+        if plan_path.exists()
+        else "(plan.md no encontrado)"
     )
 
     prompt = (
@@ -80,7 +97,8 @@ def build_prompt(task: dict) -> str:
         .replace("{{FEATURE_TITLE}}", task.get("feature_title", task["feature"]))
         .replace("{{SECTION}}", task["section"])
         .replace("{{TASK_DESCRIPTION}}", task["description"])
-        .replace("{{PROGRESS}}", progress)
+        .replace("{{PLAN}}", plan)
+        .replace("{{FEATURE_STATUS}}", feature_status_summary(data, task["feature"]))
     )
 
     if agent_instructions:
@@ -90,7 +108,8 @@ def build_prompt(task: dict) -> str:
 
 def run_agent(task: dict, prompt: str, log_path: Path) -> tuple[str, int]:
     result = subprocess.run(
-        ["claude", "-p", "--dangerously-skip-permissions", prompt],
+        ["claude", "-p", "--dangerously-skip-permissions"],
+        input=prompt,
         capture_output=True,
         text=True,
         timeout=600,
@@ -102,7 +121,8 @@ def run_agent(task: dict, prompt: str, log_path: Path) -> tuple[str, int]:
 
 
 def detect_signal(output: str) -> tuple[str, str | None]:
-    for line in reversed(output.strip().splitlines()[-30:]):
+    last_lines = output.strip().splitlines()[-30:]
+    for line in reversed(last_lines):
         line = line.strip()
         if line == "TASK_COMPLETE":
             return "complete", None
@@ -110,14 +130,18 @@ def detect_signal(output: str) -> tuple[str, str | None]:
             return "blocked", line[len("TASK_BLOCKED:"):].strip()
         if line.startswith("TASK_FAILED:"):
             return "failed", line[len("TASK_FAILED:"):].strip()
-    return "unknown", None
+    tail = "\n".join(last_lines[-10:]) if last_lines else "(sin output)"
+    return "unknown", f"Señal no detectada. Últimas líneas del agente:\n{tail}"
 
 
 def create_feature_branch(feature: str) -> str:
     branch = f"feat/{feature}"
     subprocess.run(["git", "checkout", "main"], check=True)
     subprocess.run(["git", "pull"], check=True)
-    subprocess.run(["git", "checkout", "-b", branch], check=True)
+    # Reutilizar la rama si ya existe (re-run del loop)
+    result = subprocess.run(["git", "checkout", branch], capture_output=True, text=True)
+    if result.returncode != 0:
+        subprocess.run(["git", "checkout", "-b", branch], check=True)
     return branch
 
 
@@ -144,6 +168,20 @@ def hitl_feature_pause(feature_title: str, pr_url: str) -> None:
     input("  > ")
     subprocess.run(["git", "checkout", "main"], check=True)
     subprocess.run(["git", "pull"], check=True)
+
+
+def run_tests(test_command: str | None) -> tuple[bool, str]:
+    if not test_command:
+        return True, ""
+    result = subprocess.run(
+        test_command.split(),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=120,
+    )
+    output = (result.stdout + "\n" + result.stderr).strip()
+    return result.returncode == 0, output
 
 
 def summary(data: dict) -> dict:
@@ -178,7 +216,14 @@ def main() -> None:
         # Cambio de feature: crear nueva rama
         if task["feature"] != current_feature:
             if current_branch is not None:
-                # Cerrar la feature anterior con PR + pausa HITL
+                # Cerrar la feature anterior: tests + PR + pausa HITL
+                test_cmd = data["meta"].get("test_command")
+                passed, test_output = run_tests(test_cmd)
+                if not passed:
+                    print(f"\n  Tests fallaron al cerrar {current_feature_title}:")
+                    print(test_output[-600:] if test_output else "(sin output)")
+                    print("  Corrige los fallos y relanza el loop.")
+                    break
                 pr_url = create_pr(current_feature_title, current_branch)  # type: ignore[arg-type]
                 hitl_feature_pause(current_feature_title, pr_url)  # type: ignore[arg-type]
 
@@ -198,7 +243,7 @@ def main() -> None:
         signal: str
         reason: str | None
         try:
-            prompt = build_prompt(task)
+            prompt = build_prompt(task, data)
             output, _ = run_agent(task, prompt, log_path)
             signal, reason = detect_signal(output)
         except subprocess.TimeoutExpired:
@@ -226,8 +271,15 @@ def main() -> None:
     if current_branch is not None:
         done_count = sum(1 for t in data["tasks"] if t["status"] == "done")
         if done_count > 0:
-            pr_url = create_pr(current_feature_title, current_branch)  # type: ignore[arg-type]
-            hitl_feature_pause(current_feature_title, pr_url)  # type: ignore[arg-type]
+            test_cmd = data["meta"].get("test_command")
+            passed, test_output = run_tests(test_cmd)
+            if not passed:
+                print(f"\n  Tests fallaron al cerrar {current_feature_title}:")
+                print(test_output[-600:] if test_output else "(sin output)")
+                print("  Corrige los fallos antes de crear el PR manualmente.")
+            else:
+                pr_url = create_pr(current_feature_title, current_branch)  # type: ignore[arg-type]
+                hitl_feature_pause(current_feature_title, pr_url)  # type: ignore[arg-type]
 
     s = summary(data)
     print(

@@ -12,6 +12,7 @@ Se genera `outputs/report.md` a partir de `traces/metrics.json` y del análisis 
 
 - [ ] Crear `outputs/` si no existe y escribir `outputs/report.md` con las secciones: `## Hipótesis evaluadas` (lista de hipótesis derivadas del tech-spec, p.ej. "V1 tiene menor latencia que V2 dado el overhead del protocolo MCP"), `## Métricas comparativas` (tabla con columnas Variante, Tool, duration_ms_mean, tasa_exito, token_footprint_schema; cada valor con nota al pie referenciando el campo de `metrics.json` o archivo de código del que se extrae), y `## Limitaciones` (las tres limitaciones: startup V2 incluido en latencia, token footprint es estimación estática, LLM mockeado en V3 sin latencia real).
 
-## Verificación
+## Tests
 
-- [ ] Ejecutar `python -c "report = open('outputs/report.md').read(); assert '## Hipótesis evaluadas' in report; assert '## Métricas comparativas' in report; assert '## Limitaciones' in report; assert 'duration_ms' in report or 'latencia' in report; assert 'V2' in report or 'startup' in report; import json; m = json.load(open('traces/metrics.json')); variants = set(r['variant'] for r in m['results']); assert all(v in report for v in variants); print('OK')"` y confirmar `OK` con código de salida 0.
+- [ ] Crear `tests/test_report.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_report_contains_required_sections()` lee `outputs/report.md` y verifica que contiene las secciones `## Hipótesis evaluadas`, `## Métricas comparativas` y `## Limitaciones`; `test_report_references_all_variants()` carga `traces/metrics.json`, extrae el conjunto de variantes únicas (`v1`, `v2`, `v3`) y verifica que cada una aparece en el texto de `outputs/report.md`.
+- [ ] Ejecutar `pytest tests/test_report.py -v` y confirmar exit code 0.

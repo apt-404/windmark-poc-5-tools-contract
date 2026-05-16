@@ -11,18 +11,25 @@ Eres un agente de desarrollo. Tu misión es implementar exactamente la tarea asi
 **Descripción:**
 {{TASK_DESCRIPTION}}
 
-## Estado actual del proyecto
+## Plan de la feature
 
-{{PROGRESS}}
+{{PLAN}}
+
+## Estado de las tareas de esta feature
+
+{{FEATURE_STATUS}}
 
 ## Protocolo de ejecución (orden estricto)
 
-1. Lee la descripción completa de la tarea
+1. Lee la descripción de la tarea y el plan de la feature para entender el contexto
 2. Implementa únicamente lo que pide la tarea, sin adelantar otras tareas
 3. Verifica que el resultado es correcto (ejecuta comandos de comprobación si es necesario)
-4. Actualiza `progress.md`: busca la línea `- [ ] {{TASK_ID}}` y cámbiala a `- [x] {{TASK_ID}}`; añade debajo `  ✓ Completado: <timestamp ISO>`; en la sección `## Log de ejecución` añade `- [<timestamp>] {{TASK_ID}}: <resumen de una línea>`
-5. Haz git commit con los cambios de código (si los hay)
-6. Emite la señal de estado como la última línea de tu respuesta
+4. Haz git commit con los cambios de código (si los hay)
+5. Emite la señal de estado como la última línea de tu respuesta
+
+## Nota sobre el batch de Tests
+
+Si tu tarea pertenece al batch de Tests, escribe los tests mirando los Criterios de Aceptación del archivo `specs/{{FEATURE}}/requirements.md`, no el código que acabas de implementar. Un test debe responder a "¿cumple la implementación los requisitos definidos?" y no a "¿funciona el código tal como está escrito?".
 
 ## Señales de estado
 

@@ -19,4 +19,4 @@ Se implementa `variant-3-native-tooluse/tools.py` con los schemas de las dos too
 ## Tests
 
 - [x] Crear `tests/test_variant3.py` con tres funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_nmap_scan_schema_format()` verifica que `NMAP_SCAN_SCHEMA['type'] == 'function'` y que `'parameters'` está en `NMAP_SCAN_SCHEMA['function']`; `test_run_nmap_with_fixture()` usa `unittest.mock.patch("subprocess.run")` con `returncode=0, stdout=""` y llama a `run_nmap("traces/fixtures/nmap_scan.json")` verificando que el resultado es `ToolResult` con `exit_code is not None`; `test_run_nmap_missing_fixture_returns_error()` llama a `run_nmap("traces/fixtures/no_existe.json")` sin mock y verifica que `ToolResult.error` contiene `"fixture not found"`.
-- [ ] Ejecutar `pytest tests/test_variant3.py -v` y confirmar exit code 0.
+- [x] Ejecutar `pytest tests/test_variant3.py -v` y confirmar exit code 0.

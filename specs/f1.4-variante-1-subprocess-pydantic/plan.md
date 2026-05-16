@@ -10,7 +10,7 @@ Se implementan dos funciones puras en `variant-1-subprocess/`, una por tool, que
 
 ## Módulo gobuster_dir
 
-- [ ] Crear `variant-1-subprocess/gobuster_dir.py` con la función `run(input: GobusterDirInput) -> ToolResult` completa: construir el comando gobuster añadiendo `-x` y `",".join(input.extensions)` si `extensions` no está vacío, ejecutar con `subprocess.run()` con timeout 30 s, parsear `stdout` con regex `r"(/\S+)\s+\(Status:\s+(\d+)\)"` para extraer `found_paths` y `status_codes`, asignar `extra` y capturar `TimeoutExpired`.
+- [x] Crear `variant-1-subprocess/gobuster_dir.py` con la función `run(input: GobusterDirInput) -> ToolResult` completa: construir el comando gobuster añadiendo `-x` y `",".join(input.extensions)` si `extensions` no está vacío, ejecutar con `subprocess.run()` con timeout 30 s, parsear `stdout` con regex `r"(/\S+)\s+\(Status:\s+(\d+)\)"` para extraer `found_paths` y `status_codes`, asignar `extra` y capturar `TimeoutExpired`.
 
 ## Tests
 

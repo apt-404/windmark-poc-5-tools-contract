@@ -14,5 +14,5 @@ Se genera `outputs/driver.md` a partir del `report.md` completado. La estructura
 
 ## Tests
 
-- [ ] Crear `tests/test_adr_driver.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_driver_contains_required_sections()` lee `outputs/driver.md` y verifica que contiene las secciones `## Contrato elegido`, `## Evidencia`, `## Triggers de upgrade a MCP` y `## Riesgos asumidos`; `test_driver_references_evidence_source()` verifica que `outputs/driver.md` contiene al menos una referencia a `report.md` o `metrics.json` como fuente de evidencia trazable.
+- [x] Crear `tests/test_adr_driver.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_driver_contains_required_sections()` lee `outputs/driver.md` y verifica que contiene las secciones `## Contrato elegido`, `## Evidencia`, `## Triggers de upgrade a MCP` y `## Riesgos asumidos`; `test_driver_references_evidence_source()` verifica que `outputs/driver.md` contiene al menos una referencia a `report.md` o `metrics.json` como fuente de evidencia trazable.
 - [ ] Ejecutar `pytest tests/test_adr_driver.py -v` y confirmar exit code 0.

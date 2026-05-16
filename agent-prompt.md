@@ -24,8 +24,9 @@ Eres un agente de desarrollo. Tu misión es implementar exactamente la tarea asi
 1. Lee la descripción de la tarea y el plan de la feature para entender el contexto
 2. Implementa únicamente lo que pide la tarea, sin adelantar otras tareas
 3. Verifica que el resultado es correcto (ejecuta comandos de comprobación si es necesario)
-4. Haz git commit con los cambios de código (si los hay)
-5. Emite la señal de estado como la última línea de tu respuesta
+4. Marca la tarea como completada en `specs/{{FEATURE}}/plan.md` cambiando `- [ ]` por `- [x]` en la línea correspondiente a esta tarea
+5. Haz git commit con los cambios de código y el `plan.md` actualizado (si los hay)
+6. Emite la señal de estado como la última línea de tu respuesta
 
 ## Nota sobre el batch de Tests
 

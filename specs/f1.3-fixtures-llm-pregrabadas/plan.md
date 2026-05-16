@@ -11,4 +11,4 @@ Se generan dos fixtures estáticas en formato OpenAI `function_call` para simula
 ## Tests
 
 - [x] Crear `tests/test_fixtures.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_nmap_fixture_structure()` carga `traces/fixtures/nmap_scan.json`, parsea `function.arguments` y verifica que contiene `target == "192.168.1.1"`, `ports == "1-1000"` y `flags == ["-sV"]`; `test_gobuster_fixture_structure()` carga `traces/fixtures/gobuster_dir.json` y verifica que `function.arguments` contiene las claves `target`, `wordlist` y `extensions`.
-- [ ] Ejecutar `pytest tests/test_fixtures.py -v` y confirmar exit code 0.
+- [x] Ejecutar `pytest tests/test_fixtures.py -v` y confirmar exit code 0.

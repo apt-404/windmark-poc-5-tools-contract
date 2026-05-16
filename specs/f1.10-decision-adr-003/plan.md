@@ -10,7 +10,7 @@ Se genera `outputs/driver.md` a partir del `report.md` completado. La estructura
 
 ## Redacción de driver.md
 
-- [ ] Crear `outputs/driver.md` con las cuatro secciones: `## Contrato elegido` (variante y justificación en 2-4 frases con referencia a sección de `report.md`), `## Evidencia` (tabla de las tres métricas para la variante elegida con referencia al campo de `metrics.json`), `## Triggers de upgrade a MCP` (los tres criterios verificables con definición exacta de qué los activa: segundo cliente independiente, blast radius de la tool, demanda explícita de protocolo MCP), y `## Riesgos asumidos` (derivados de las limitaciones del tech-spec).
+- [x] Crear `outputs/driver.md` con las cuatro secciones: `## Contrato elegido` (variante y justificación en 2-4 frases con referencia a sección de `report.md`), `## Evidencia` (tabla de las tres métricas para la variante elegida con referencia al campo de `metrics.json`), `## Triggers de upgrade a MCP` (los tres criterios verificables con definición exacta de qué los activa: segundo cliente independiente, blast radius de la tool, demanda explícita de protocolo MCP), y `## Riesgos asumidos` (derivados de las limitaciones del tech-spec).
 
 ## Tests
 

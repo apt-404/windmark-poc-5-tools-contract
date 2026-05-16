@@ -36,6 +36,12 @@ def _read_line_with_timeout(proc: subprocess.Popen, timeout_s: float) -> bytes:
         return b""
 
 
+def _send(proc: subprocess.Popen, payload: dict) -> None:
+    data = (json.dumps(payload) + "\n").encode("utf-8")
+    proc.stdin.write(data)
+    proc.stdin.flush()
+
+
 def test_mcp_server_exposes_tools():
     server_path = _VARIANT_DIR / "server.py"
     proc = subprocess.Popen(
@@ -46,11 +52,24 @@ def test_mcp_server_exposes_tools():
         bufsize=0,
     )
     try:
-        message = (
-            json.dumps({"jsonrpc": "2.0", "method": "tools/list", "id": 1}) + "\n"
+        _send(
+            proc,
+            {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {},
+                    "clientInfo": {"name": "test", "version": "1"},
+                },
+            },
         )
-        proc.stdin.write(message.encode("utf-8"))
-        proc.stdin.flush()
+        init_line = _read_line_with_timeout(proc, timeout_s=3.0)
+        assert init_line, "MCP server did not respond to initialize within 3s"
+
+        _send(proc, {"jsonrpc": "2.0", "method": "notifications/initialized"})
+        _send(proc, {"jsonrpc": "2.0", "method": "tools/list", "id": 1})
 
         line = _read_line_with_timeout(proc, timeout_s=3.0)
         assert line, "MCP server did not respond to tools/list within 3s"

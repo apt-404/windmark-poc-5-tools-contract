@@ -285,12 +285,12 @@
       "feature_title": "F1.6 Variante 3: tool-use nativo del provider",
       "section": "Setup y schemas OpenAI",
       "description": "Crear el directorio `variant-3-native-tooluse/` con `__init__.py` vacío y `tools.py` con los dos dicts de schema en formato OpenAI: `NMAP_SCAN_SCHEMA` (`{\"type\": \"function\", \"function\": {\"name\": \"nmap_scan\", \"description\": \"...\", \"parameters\": {\"type\": \"object\", \"properties\": {\"target\": ..., \"ports\": ..., \"flags\": ...}, \"required\": [\"target\"]}}}`) y `GOBUSTER_DIR_SCHEMA` análogo con campos `target`, `wordlist` y `extensions`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:45:34.502840+00:00",
+      "completed_at": "2026-05-16T15:46:22.942635+00:00"
     },
     {
       "id": "f1.6-02",
@@ -298,12 +298,12 @@
       "feature_title": "F1.6 Variante 3: tool-use nativo del provider",
       "section": "Función run_nmap",
       "description": "Implementar `run_nmap(fixture_path: str) -> ToolResult` en `tools.py`: abrir fixture con `json.load()` capturando `FileNotFoundError` (devolver `ToolResult` con `error=f\"fixture not found: {fixture_path}\"`); extraer `params = json.loads(data[\"function\"][\"arguments\"])`; construir y ejecutar el comando nmap con timeout 30 s; parsear output con regex; devolver `ToolResult`; capturar `TimeoutExpired` con `error=\"timeout\"`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:46:22.943443+00:00",
+      "completed_at": "2026-05-16T15:47:33.783124+00:00"
     },
     {
       "id": "f1.6-03",
@@ -311,12 +311,12 @@
       "feature_title": "F1.6 Variante 3: tool-use nativo del provider",
       "section": "Función run_gobuster",
       "description": "Implementar `run_gobuster(fixture_path: str) -> ToolResult` en `tools.py` con la misma estructura: leer fixture, extraer `target`, `wordlist` y `extensions` con `params.get()`; construir y ejecutar el comando gobuster con timeout 30 s; parsear output con regex; devolver `ToolResult`; capturar `TimeoutExpired`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:47:33.783922+00:00",
+      "completed_at": "2026-05-16T15:48:55.747178+00:00"
     },
     {
       "id": "f1.6-04",
@@ -324,12 +324,12 @@
       "feature_title": "F1.6 Variante 3: tool-use nativo del provider",
       "section": "Tests",
       "description": "Crear `tests/test_variant3.py` con tres funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_nmap_scan_schema_format()` verifica que `NMAP_SCAN_SCHEMA['type'] == 'function'` y que `'parameters'` está en `NMAP_SCAN_SCHEMA['function']`; `test_run_nmap_with_fixture()` usa `unittest.mock.patch(\"subprocess.run\")` con `returncode=0, stdout=\"\"` y llama a `run_nmap(\"traces/fixtures/nmap_scan.json\")` verificando que el resultado es `ToolResult` con `exit_code is not None`; `test_run_nmap_missing_fixture_returns_error()` llama a `run_nmap(\"traces/fixtures/no_existe.json\")` sin mock y verifica que `ToolResult.error` contiene `\"fixture not found\"`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:48:55.748058+00:00",
+      "completed_at": "2026-05-16T15:50:08.156823+00:00"
     },
     {
       "id": "f1.6-05",
@@ -337,12 +337,12 @@
       "feature_title": "F1.6 Variante 3: tool-use nativo del provider",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_variant3.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:50:08.157651+00:00",
+      "completed_at": "2026-05-16T15:50:34.499603+00:00"
     },
     {
       "id": "f1.7-01",

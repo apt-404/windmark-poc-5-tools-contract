@@ -532,12 +532,12 @@
       "feature_title": "F1.8 Ejecución y métricas consolidadas",
       "section": "Soporte de repeticiones en compare.py",
       "description": "Añadir el argumento `--repeat N` (int, default `1`) a `compare.py`, modificar el flujo principal para iterar `repeat` veces por cada combinación (variante, tool) escribiendo una línea JSONL por iteración, y actualizar `consolidate_metrics` para incluir en `metrics.json` los campos `repeat`, `duration_ms_mean` y `duration_ms_values` por (variante, tool) cuando `repeat > 1`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:22:25.439639+00:00",
+      "completed_at": "2026-05-16T16:23:53.554792+00:00"
     },
     {
       "id": "f1.8-02",
@@ -545,11 +545,11 @@
       "feature_title": "F1.8 Ejecución y métricas consolidadas",
       "section": "Ejecución real (integración)",
       "description": "Ejecutar `docker run -e TARGET_IP=$TARGET_IP windmark-poc5 python compare.py --check` y confirmar código de salida 0; a continuación ejecutar el run completo: `docker run -e TARGET_IP=$TARGET_IP -e WORDLIST_PATH=/usr/share/wordlists/dirb/common.txt -v $(pwd)/traces:/app/traces windmark-poc5 python compare.py --target $TARGET_IP --variant all --tool all --repeat 3` y confirmar código de salida 0.",
-      "status": "pending",
+      "status": "blocked",
       "agent_type": "default-agent",
-      "attempts": 0,
-      "error": null,
-      "started_at": null,
+      "attempts": 3,
+      "error": "TARGET_IP no definida, Docker daemon no disponible y conectividad a HTB Starting Point no verificable desde el agente",
+      "started_at": "2026-05-16T16:24:39.071543+00:00",
       "completed_at": null
     },
     {
@@ -558,12 +558,12 @@
       "feature_title": "F1.8 Ejecución y métricas consolidadas",
       "section": "Tests",
       "description": "Crear `tests/test_compare_repeat.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_repeat_argument_iterates_n_times(tmp_path)` usa `unittest.mock.patch` para interceptar las funciones de invocación de variantes y llama al flujo `main()` con `--repeat 2 --variant v1 --tool nmap_scan --target 127.0.0.1 --output str(tmp_path)`, verificando que la función de invocación se llamó exactamente 2 veces; `test_metrics_contains_mean_when_repeat_gt_1(tmp_path)` llama a `consolidate_metrics` con una lista de resultados simulados con `repeat=2` y verifica que `metrics.json` incluye el campo `duration_ms_mean` en al menos una entrada.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:24:56.668919+00:00",
+      "completed_at": "2026-05-16T16:26:01.014950+00:00"
     },
     {
       "id": "f1.8-04",
@@ -571,12 +571,12 @@
       "feature_title": "F1.8 Ejecución y métricas consolidadas",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_compare_repeat.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:26:01.015765+00:00",
+      "completed_at": "2026-05-16T16:26:30.019236+00:00"
     },
     {
       "id": "f1.8-05",
@@ -584,12 +584,12 @@
       "feature_title": "F1.8 Ejecución y métricas consolidadas",
       "section": "Documentación y commit de trazas",
       "description": "Añadir en la sección `### Desarrollo local` de `tech-spec.md` el comando exacto del run real con los parámetros de 3 repeticiones, el montaje del volumen de traces y las variables de entorno requeridas (`TARGET_IP`, `WORDLIST_PATH`), con nota de que `TARGET_IP` debe estar definida antes de lanzar el contenedor; ejecutar `git add traces/ tech-spec.md` y commitear con mensaje `data(F1.8): metricas run real HTB`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T16:26:30.020047+00:00",
+      "completed_at": "2026-05-16T16:27:32.762994+00:00"
     }
   ]
 }

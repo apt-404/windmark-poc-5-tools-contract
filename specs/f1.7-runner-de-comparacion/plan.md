@@ -6,7 +6,7 @@ Se completa `compare.py` (iniciado en F1.2 con el subcomando `--check`) añadien
 
 ## CLI, logging y métricas
 
-- [ ] Añadir a `compare.py` los argumentos `--target` (str), `--variant` (str, default `all`, validado contra `v1|v2|v3|all`), `--tool` (str, default `all`, validado contra `nmap_scan|gobuster_dir|all`) y `--output` (str, default `traces/`); implementar `write_jsonl(result, variant, tool, output_dir)` que crea `output_dir/<variant>/<tool>/` si no existe y escribe una línea JSONL con timestamp ISO-8601, `variant`, `tool`, `duration_ms`, `exit_code`, `error` y `output_summary` (primeros 200 chars de `raw_output`); implementar `consolidate_metrics(results, output_dir)` que escribe `output_dir/metrics.json` con `total_invocations`, `variants_ok`, `variants_error` y `results`.
+- [x] Añadir a `compare.py` los argumentos `--target` (str), `--variant` (str, default `all`, validado contra `v1|v2|v3|all`), `--tool` (str, default `all`, validado contra `nmap_scan|gobuster_dir|all`) y `--output` (str, default `traces/`); implementar `write_jsonl(result, variant, tool, output_dir)` que crea `output_dir/<variant>/<tool>/` si no existe y escribe una línea JSONL con timestamp ISO-8601, `variant`, `tool`, `duration_ms`, `exit_code`, `error` y `output_summary` (primeros 200 chars de `raw_output`); implementar `consolidate_metrics(results, output_dir)` que escribe `output_dir/metrics.json` con `total_invocations`, `variants_ok`, `variants_error` y `results`.
 
 ## Funciones de invocación V1 y V3
 

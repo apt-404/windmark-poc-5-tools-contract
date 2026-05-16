@@ -64,12 +64,12 @@
       "feature_title": "F1.2 Entorno Docker + healthcheck",
       "section": "Configuración de dependencias",
       "description": "Crear `pyproject.toml` en la raíz con sección `[project]` (nombre `windmark-poc5`, requires-python `>=3.12`) y sección `[project.dependencies]` con `pydantic>=2.0`, `fastmcp`, `litellm`, `structlog`; ejecutar `uv lock` para generar `uv.lock`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:16:30.942574+00:00",
+      "completed_at": "2026-05-16T15:16:51.614023+00:00"
     },
     {
       "id": "f1.2-02",
@@ -77,12 +77,12 @@
       "feature_title": "F1.2 Entorno Docker + healthcheck",
       "section": "Dockerfile",
       "description": "Crear `Dockerfile` completo con `FROM python:3.12-slim`, `WORKDIR /app`, capa de sistema (`apt-get install -y --no-install-recommends nmap gobuster iputils-ping`), instalación de uv (`pip install uv --no-cache-dir`), copia de lockfiles y sync (`COPY pyproject.toml uv.lock ./` + `RUN uv sync --frozen --no-dev`), copia del código fuente (`COPY . .`), y variables de entorno `ENV WORDLIST_PATH=/usr/share/wordlists/dirb/common.txt` y `ENV MCP_SERVER_TIMEOUT=10`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:16:51.614850+00:00",
+      "completed_at": "2026-05-16T15:17:10.879556+00:00"
     },
     {
       "id": "f1.2-03",
@@ -90,12 +90,12 @@
       "feature_title": "F1.2 Entorno Docker + healthcheck",
       "section": "Subcomando --check en compare.py",
       "description": "Crear `compare.py` en la raíz con argumento `--check` usando `argparse` e implementar la verificación completa: `nmap` y `gobuster` con `shutil.which()`, wordlist con `os.path.isfile()`, fixtures con `glob.glob(\"traces/fixtures/*.json\")`, y ping a `TARGET_IP` si está en el entorno con `subprocess.run([\"ping\", \"-c\", \"1\", \"-W\", \"2\", target_ip])`; imprimir tabla de estado (Dependencia | Estado) y salir con `sys.exit(0)` si todo OK o `sys.exit(1)` si alguna falla.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:17:10.880306+00:00",
+      "completed_at": "2026-05-16T15:17:23.971198+00:00"
     },
     {
       "id": "f1.2-04",
@@ -103,12 +103,12 @@
       "feature_title": "F1.2 Entorno Docker + healthcheck",
       "section": "Tests",
       "description": "Crear `tests/test_compare_check.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_check_output_contains_dependency_table()` ejecuta `subprocess.run([\"python\", \"compare.py\", \"--check\"], capture_output=True, text=True)` y verifica que stdout contiene las cadenas `nmap`, `gobuster` y `wordlist`; `test_check_returncode_without_fixtures()` verifica que el código de salida es 1 cuando `traces/fixtures/` no existe o está vacío (sin `TARGET_IP` definida).",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T14:55:14+00:00",
+      "completed_at": "2026-05-16T14:56:00+00:00"
     },
     {
       "id": "f1.2-05",
@@ -116,12 +116,12 @@
       "feature_title": "F1.2 Entorno Docker + healthcheck",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_compare_check.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T14:56:00+00:00",
+      "completed_at": "2026-05-16T14:56:30+00:00"
     },
     {
       "id": "f1.3-01",
@@ -129,12 +129,12 @@
       "feature_title": "F1.3 Fixtures LLM pregrabadas",
       "section": "Creación de fixtures",
       "description": "Crear el directorio `traces/fixtures/` y `traces/.gitkeep` si el directorio `traces/` no está aún rastreado por git; escribir `traces/fixtures/nmap_scan.json` con la estructura `{\"id\": \"call_nmap_scan_001\", \"type\": \"function\", \"function\": {\"name\": \"nmap_scan\", \"arguments\": \"{\\\"target\\\": \\\"192.168.1.1\\\", \\\"ports\\\": \\\"1-1000\\\", \\\"flags\\\": [\\\"-sV\\\"]}\"}}` y `traces/fixtures/gobuster_dir.json` con la estructura análoga para `gobuster_dir` con campos `target`, `wordlist` y `extensions`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:04:26+00:00",
+      "completed_at": "2026-05-16T15:04:50+00:00"
     },
     {
       "id": "f1.3-02",
@@ -142,12 +142,12 @@
       "feature_title": "F1.3 Fixtures LLM pregrabadas",
       "section": "Tests",
       "description": "Crear `tests/test_fixtures.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_nmap_fixture_structure()` carga `traces/fixtures/nmap_scan.json`, parsea `function.arguments` y verifica que contiene `target == \"192.168.1.1\"`, `ports == \"1-1000\"` y `flags == [\"-sV\"]`; `test_gobuster_fixture_structure()` carga `traces/fixtures/gobuster_dir.json` y verifica que `function.arguments` contiene las claves `target`, `wordlist` y `extensions`.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:04:50+00:00",
+      "completed_at": "2026-05-16T15:05:40+00:00"
     },
     {
       "id": "f1.3-03",
@@ -155,12 +155,12 @@
       "feature_title": "F1.3 Fixtures LLM pregrabadas",
       "section": "Tests",
       "description": "Ejecutar `pytest tests/test_fixtures.py -v` y confirmar exit code 0.",
-      "status": "pending",
+      "status": "done",
       "agent_type": "default-agent",
-      "attempts": 0,
+      "attempts": 1,
       "error": null,
-      "started_at": null,
-      "completed_at": null
+      "started_at": "2026-05-16T15:05:40+00:00",
+      "completed_at": "2026-05-16T15:06:16+00:00"
     },
     {
       "id": "f1.4-01",

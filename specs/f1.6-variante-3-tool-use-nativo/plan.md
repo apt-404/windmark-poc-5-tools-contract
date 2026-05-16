@@ -6,7 +6,7 @@ Se implementa `variant-3-native-tooluse/tools.py` con los schemas de las dos too
 
 ## Setup y schemas OpenAI
 
-- [ ] Crear el directorio `variant-3-native-tooluse/` con `__init__.py` vacío y `tools.py` con los dos dicts de schema en formato OpenAI: `NMAP_SCAN_SCHEMA` (`{"type": "function", "function": {"name": "nmap_scan", "description": "...", "parameters": {"type": "object", "properties": {"target": ..., "ports": ..., "flags": ...}, "required": ["target"]}}}`) y `GOBUSTER_DIR_SCHEMA` análogo con campos `target`, `wordlist` y `extensions`.
+- [x] Crear el directorio `variant-3-native-tooluse/` con `__init__.py` vacío y `tools.py` con los dos dicts de schema en formato OpenAI: `NMAP_SCAN_SCHEMA` (`{"type": "function", "function": {"name": "nmap_scan", "description": "...", "parameters": {"type": "object", "properties": {"target": ..., "ports": ..., "flags": ...}, "required": ["target"]}}}`) y `GOBUSTER_DIR_SCHEMA` análogo con campos `target`, `wordlist` y `extensions`.
 
 ## Función run_nmap
 

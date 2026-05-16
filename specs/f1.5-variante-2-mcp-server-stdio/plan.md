@@ -16,7 +16,7 @@ Se implementa un servidor FastMCP con transporte stdio que expone `nmap_scan` y 
 
 - [ ] Añadir en `compare.py` las funciones `start_mcp_server() -> subprocess.Popen` (arranca `python variant-2-mcp-stdio/server.py` con `stdin=PIPE, stdout=PIPE, stderr=PIPE`) y `wait_for_mcp_ready(proc, timeout_s) -> bool` (envía `{"jsonrpc":"2.0","method":"tools/list","id":1}` por stdin y lee stdout con timeout; devuelve `True` si responde antes de `timeout_s`, `False` en caso contrario); si devuelve `False`, devolver `ToolResult` con `error="mcp_server_timeout"`.
 
-## Verificación
+## Tests
 
-- [ ] Ejecutar `python -c "import subprocess, json, time; p = subprocess.Popen(['python', 'variant-2-mcp-stdio/server.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE); p.stdin.write(json.dumps({'jsonrpc':'2.0','method':'tools/list','id':1}).encode()+b'\n'); p.stdin.flush(); time.sleep(2); line = p.stdout.readline(); p.terminate(); resp = json.loads(line); tools = [t['name'] for t in resp['result']['tools']]; assert 'nmap_scan' in tools and 'gobuster_dir' in tools; print('OK')"` y confirmar `OK` con código de salida 0.
-- [ ] Ejecutar `python compare.py --variant v2 --tool nmap_scan --target 127.0.0.1` y confirmar que el proceso termina sin excepción no capturada y que `traces/metrics.json` contiene al menos una entrada con `"variant": "v2"`.
+- [ ] Crear `tests/test_variant2_mcp.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_mcp_server_exposes_tools()` arranca `python variant-2-mcp-stdio/server.py` con `subprocess.Popen`, envía el mensaje JSON-RPC `{"jsonrpc":"2.0","method":"tools/list","id":1}` por stdin, lee la respuesta con timeout 3 s (usando `select` o `readline` con `timeout`) y verifica que `nmap_scan` y `gobuster_dir` están en la lista devuelta; `test_mcp_tools_modules_importable()` importa `variant_2_mcp_stdio.tools.nmap_scan` y `variant_2_mcp_stdio.tools.gobuster_dir` directamente y verifica que ambos módulos se importan sin error.
+- [ ] Ejecutar `pytest tests/test_variant2_mcp.py -v` y confirmar exit code 0.

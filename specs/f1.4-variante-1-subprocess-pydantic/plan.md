@@ -12,6 +12,7 @@ Se implementan dos funciones puras en `variant-1-subprocess/`, una por tool, que
 
 - [ ] Crear `variant-1-subprocess/gobuster_dir.py` con la función `run(input: GobusterDirInput) -> ToolResult` completa: construir el comando gobuster añadiendo `-x` y `",".join(input.extensions)` si `extensions` no está vacío, ejecutar con `subprocess.run()` con timeout 30 s, parsear `stdout` con regex `r"(/\S+)\s+\(Status:\s+(\d+)\)"` para extraer `found_paths` y `status_codes`, asignar `extra` y capturar `TimeoutExpired`.
 
-## Verificación
+## Tests
 
-- [ ] Desde el contenedor Docker, ejecutar `python -c "from variant_1_subprocess.nmap_scan import run as run_nmap; from variant_1_subprocess.gobuster_dir import run as run_gobuster; from shared.models import NmapScanInput, GobusterDirInput; r1 = run_nmap(NmapScanInput(target='127.0.0.1')); assert r1.exit_code is not None and isinstance(r1.extra, dict); r2 = run_gobuster(GobusterDirInput(target='http://127.0.0.1', wordlist='/usr/share/wordlists/dirb/common.txt')); assert r2.exit_code is not None; s = NmapScanInput.model_json_schema(); assert 'target' in s['properties'] and 'ports' in s['properties']; print('OK')"` y confirmar `OK` con código de salida 0.
+- [ ] Crear `tests/test_variant1.py` con tres funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_run_nmap_returns_tool_result()` usa `unittest.mock.patch("subprocess.run")` configurado con `returncode=0, stdout="", stderr=""` y verifica que `run_nmap(NmapScanInput(target="127.0.0.1"))` devuelve un `ToolResult` con `exit_code is not None` e `isinstance(extra, dict)`; `test_run_gobuster_returns_tool_result()` hace lo equivalente para `run_gobuster`; `test_run_nmap_timeout_sets_error()` configura `subprocess.run` para lanzar `subprocess.TimeoutExpired` y verifica que `ToolResult.error == "timeout"`.
+- [ ] Ejecutar `pytest tests/test_variant1.py -v` y confirmar exit code 0.

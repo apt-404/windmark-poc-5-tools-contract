@@ -12,7 +12,7 @@ Se genera `outputs/driver.md` a partir del `report.md` completado. La estructura
 
 - [ ] Crear `outputs/driver.md` con las cuatro secciones: `## Contrato elegido` (variante y justificación en 2-4 frases con referencia a sección de `report.md`), `## Evidencia` (tabla de las tres métricas para la variante elegida con referencia al campo de `metrics.json`), `## Triggers de upgrade a MCP` (los tres criterios verificables con definición exacta de qué los activa: segundo cliente independiente, blast radius de la tool, demanda explícita de protocolo MCP), y `## Riesgos asumidos` (derivados de las limitaciones del tech-spec).
 
-## Verificación
+## Tests
 
-- [ ] Ejecutar `python -c "d = open('outputs/driver.md').read(); assert '## Contrato elegido' in d; assert '## Evidencia' in d; assert '## Triggers de upgrade a MCP' in d; assert '## Riesgos asumidos' in d; assert 'report.md' in d or 'metrics.json' in d; print('OK')"` y confirmar `OK` con código de salida 0.
-- [ ] Ejecutar `python compare.py --check` y confirmar código de salida 0; ejecutar `python -c "import json; m = json.load(open('traces/metrics.json')); variants = set(r['variant'] for r in m['results']); assert len(variants) >= 2; print('OK')"` y confirmar que hay métricas de al menos dos variantes distintas.
+- [ ] Crear `tests/test_adr_driver.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_driver_contains_required_sections()` lee `outputs/driver.md` y verifica que contiene las secciones `## Contrato elegido`, `## Evidencia`, `## Triggers de upgrade a MCP` y `## Riesgos asumidos`; `test_driver_references_evidence_source()` verifica que `outputs/driver.md` contiene al menos una referencia a `report.md` o `metrics.json` como fuente de evidencia trazable.
+- [ ] Ejecutar `pytest tests/test_adr_driver.py -v` y confirmar exit code 0.

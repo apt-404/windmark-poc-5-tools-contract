@@ -16,7 +16,7 @@ Se crea el `Dockerfile` sobre `python:3.12-slim` instalando uv, nmap y gobuster.
 
 - [ ] Crear `compare.py` en la raíz con argumento `--check` usando `argparse` e implementar la verificación completa: `nmap` y `gobuster` con `shutil.which()`, wordlist con `os.path.isfile()`, fixtures con `glob.glob("traces/fixtures/*.json")`, y ping a `TARGET_IP` si está en el entorno con `subprocess.run(["ping", "-c", "1", "-W", "2", target_ip])`; imprimir tabla de estado (Dependencia | Estado) y salir con `sys.exit(0)` si todo OK o `sys.exit(1)` si alguna falla.
 
-## Verificación
+## Tests
 
-- [ ] Ejecutar `docker build -t windmark-poc5 .` y confirmar código de salida 0; ejecutar `docker run windmark-poc5 nmap --version` y `docker run windmark-poc5 gobuster --version` y confirmar que ambos devuelven versión con código de salida 0.
-- [ ] Ejecutar `docker run windmark-poc5 python compare.py --check` sin `TARGET_IP` y confirmar que el código de salida es 1 (fallan fixtures al no existir aún) y que stdout contiene las líneas `nmap`, `gobuster` y `wordlist`.
+- [ ] Crear `tests/test_compare_check.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_check_output_contains_dependency_table()` ejecuta `subprocess.run(["python", "compare.py", "--check"], capture_output=True, text=True)` y verifica que stdout contiene las cadenas `nmap`, `gobuster` y `wordlist`; `test_check_returncode_without_fixtures()` verifica que el código de salida es 1 cuando `traces/fixtures/` no existe o está vacío (sin `TARGET_IP` definida).
+- [ ] Ejecutar `pytest tests/test_compare_check.py -v` y confirmar exit code 0.

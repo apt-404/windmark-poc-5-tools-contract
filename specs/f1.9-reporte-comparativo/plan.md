@@ -6,7 +6,7 @@ Se genera `outputs/report.md` a partir de `traces/metrics.json` y del análisis 
 
 ## Análisis de métricas y token footprint
 
-- [ ] Leer `traces/metrics.json` y calcular: `duration_ms_mean` por `(variant, tool)` excluyendo invocaciones con `error is not None` (documentar cuántas se excluyeron); tasa de éxito por variante como `invocaciones con error is None / total`; token footprint de schema para V1 (`NmapScanInput.model_json_schema()`), V2 (schema `tools/list` de FastMCP) y V3 (`NMAP_SCAN_SCHEMA`) usando `len(json.dumps(schema)) / 4`; imprimir el dict de resultados como JSON para validar antes de usarlo en el reporte.
+- [x] Leer `traces/metrics.json` y calcular: `duration_ms_mean` por `(variant, tool)` excluyendo invocaciones con `error is not None` (documentar cuántas se excluyeron); tasa de éxito por variante como `invocaciones con error is None / total`; token footprint de schema para V1 (`NmapScanInput.model_json_schema()`), V2 (schema `tools/list` de FastMCP) y V3 (`NMAP_SCAN_SCHEMA`) usando `len(json.dumps(schema)) / 4`; imprimir el dict de resultados como JSON para validar antes de usarlo en el reporte.
 
 ## Redacción de report.md
 

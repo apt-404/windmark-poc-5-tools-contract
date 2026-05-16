@@ -15,4 +15,4 @@ Se genera `outputs/report.md` a partir de `traces/metrics.json` y del análisis 
 ## Tests
 
 - [x] Crear `tests/test_report.py` con dos funciones pytest derivadas de los Criterios de Aceptación de `requirements.md`: `test_report_contains_required_sections()` lee `outputs/report.md` y verifica que contiene las secciones `## Hipótesis evaluadas`, `## Métricas comparativas` y `## Limitaciones`; `test_report_references_all_variants()` carga `traces/metrics.json`, extrae el conjunto de variantes únicas (`v1`, `v2`, `v3`) y verifica que cada una aparece en el texto de `outputs/report.md`.
-- [ ] Ejecutar `pytest tests/test_report.py -v` y confirmar exit code 0.
+- [x] Ejecutar `pytest tests/test_report.py -v` y confirmar exit code 0.
